@@ -59,6 +59,7 @@ input[type="radio"] {
   display:inline-block;
   text-align: center;
   text-decoration: none;
+  margin-left: 5px;
 }
 
 .btn.large {
@@ -113,8 +114,22 @@ input[type="radio"] {
   border:solid 1px rgb(21,90,233);
 }
 
+.btn.orange {
+  color: rgb(247, 158, 4);
+}
+
+.btn.orange:hover {
+  background:rgb(247, 158, 4);
+  border:solid 1px rgb(247, 158, 4);
+}
+
+
 .btn.green {
   color:green;
+}
+
+.btn {
+    transition: all .1s ease-in-out;
 }
 
 .btn.green:hover {
@@ -124,10 +139,12 @@ input[type="radio"] {
 
 /* Main menu with buttons */
 
-#menu {
+.menu {
+  height: 30px;
   margin: 30px auto 8px auto;
-  max-width:90%;
+  max-width: 90%;
   text-align: center;
+  display: block;
 }
 
 #import-file {
@@ -307,8 +324,8 @@ a.disabled:hover {
 }
 
 .blur {
-  -webkit-filter:blur(3px); 
-  filter:blur(3px); 
+  -webkit-filter:blur(3px);
+  filter:blur(3px);
 }
 
 #edit-redirect-form {
@@ -345,7 +362,7 @@ a.disabled:hover {
 
 .input-cell {
   padding-top:1px;
-} 
+}
 
 .form-grid div input[type='text'] {
   width:510px;
@@ -396,7 +413,7 @@ a.disabled:hover {
 }
 
 ::-moz-placeholder {  /* Firefox 19+ */
-   color: #c0c0c0;  
+   color: #c0c0c0;
 }
 
 .advanced {
@@ -479,10 +496,34 @@ footer small a:hover {
   width: 600px;
   padding: 20px;
   margin-top: 200px;
-  border-width: 4px;  
+  border-width: 4px;
 }
 
 
 #storage-sync-option input {
     margin:10px;
+}
+
+#journal-form {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+}
+
+textarea {
+    display: inline-block;
+    margin: 0 auto;
+    height: 100px;
+    width: 80%;
+    min-width: 400px;
+    font-size: 20px;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
 }

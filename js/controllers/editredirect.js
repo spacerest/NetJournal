@@ -1,5 +1,4 @@
 redirectorApp.controller('EditRedirectCtrl', ['$scope', function($s) {
-	
 
 	$s.requestTypes = Redirect.requestTypes;
 
@@ -7,7 +6,7 @@ redirectorApp.controller('EditRedirectCtrl', ['$scope', function($s) {
 	// everything about the editing process, so I make this available on
 	// the parent scope, so the RedirectListCtrl can access it.
 	$s.$parent.editRedirect = function(index) {
-		$s.redirect = new Redirect($s.redirects[index]); 
+		$s.redirect = new Redirect($s.redirects[index]);
 		$s.editIndex = index;
 		$s.redirect.updateExampleResult();
 		if ($s.redirect.processMatches != 'noProcessing' || !($s.redirect.appliesTo.length == 1 && $s.redirect.appliesTo[0] == "main_frame")) {
@@ -25,7 +24,7 @@ redirectorApp.controller('EditRedirectCtrl', ['$scope', function($s) {
 
 	/**
 	 * Duplicates a redirect.
-	 * @param {Number} index 
+	 * @param {Number} index
 	 */
 	$s.$parent.duplicateRedirect = function (index) {
 		var redirect = new Redirect($s.redirects[index]);
@@ -36,12 +35,21 @@ redirectorApp.controller('EditRedirectCtrl', ['$scope', function($s) {
 		$s.saveChanges();
 	}
 
-	$s.saveRedirect = function() {
+    /**
+     * Saves a redirect
+     */
+	$s.saveBlockedSite = function() {
 		if ($s.redirect.error) {
 			return; //Button is already disabled, but we still get the click
 		}
 
 		//Just make sure it's freshly updated when saved
+
+        // BLOCK JOURNAL addition: we didn't ask for a "redirect to" site,
+        // because we'll only be (temporarily) redirecting to this extension
+        // journaling page
+        $s.redirect.redirectUrl = chrome.extension.getURL('block-journal.html');//"chrome-extension://ckhcnajpjigecmdajajfogmcjkjcbhgp/block-journal.html";
+
 		$s.redirect.updateExampleResult();
 
 		if ($s.editIndex >= 0) {
@@ -87,7 +95,7 @@ redirectorApp.controller('EditRedirectCtrl', ['$scope', function($s) {
 
 		$s.redirect.updateExampleResult();
 	};
-	
+
 	function closeEditForm() {
 		$s.editIndex = -1;
 		$s.redirect = null;

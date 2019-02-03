@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>REDIRECTOR</title>
+        <title>Block Journal</title>
 		<link rel="stylesheet" href="css/popup.css" />
 		<meta charset="UTF-8">
 		<script src="js/angular.min.js"></script>
 		<script src="js/popup.js"></script>
 	</head>
 	<body ng-app="popupApp" ng-controller="PopupCtrl">
-		<h1>REDIRECTOR</h1>
+		<h1>Block Journal</h1>
 		<div class="disabled"><span ng-show="disabled">Disabled</span></div>
-		<button ng-click="toggleDisabled()">{{disabled ? 'Enable Redirector' : 'Disable Redirector'}}</button>
-        <button ng-click="openRedirectorSettings()">Edit Redirects</button>
+		<button ng-click="toggleDisabled()">{{disabled ? 'Enable' : 'Disable'}}</button>
+        <button ng-click="openBlockJournalSettings()">Edit Blocked Sites</button>
 		<label><input type="checkbox" ng-model="logging" ng-click="toggleLogging()" /> Enable logging</label>
 		<label><input type="checkbox" ng-model="enableNotifications" ng-click="toggleNotifications()" /> Enable notifications</label>
 	</body>

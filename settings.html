@@ -7,7 +7,6 @@
 		<!-- ☈ -->
 		<link rel="shortcut icon" href="images/icon-active-32.png">
 
-
 		<script src="js/angular.min.js"></script>
 		<script src="js/redirect.js"></script>
 		<script src="js/app.js"></script>
@@ -40,16 +39,8 @@
 				<span>{{redirect.includePattern}}
 			</div>
 			<div>
-				<label>Redirect to:</label>
-				<span>{{redirect.redirectUrl}}</span>
-			</div>
-			<div>
 				<label>Pattern type:</label>
 				<span>{{redirect.patternType == 'W' ? 'Wildcard' : 'Regular Expression'}}</span>
-			</div>
-			<div>
-				<label>Pattern Description:</label>
-				<span>{{redirect.patternDesc}}</span>
 			</div>
 			<div class="button-container">
 				<a class="btn red large" ng-click="deleteRedirect()">Yes, delete it</a>
@@ -75,10 +66,6 @@
 					<div class="input-cell"><input type="text" ng-model="redirect.includePattern" ng-change="redirect.updateExampleResult()" placeholder="Pattern that matches the urls you want to redirect" /></div>
 				</div>
 				<div>
-					<label>Redirect to:</label>
-					<div class="input-cell"><input type="text" ng-model="redirect.redirectUrl" ng-change="redirect.updateExampleResult()" placeholder="The url you want to redirect requests to" /></div>
-				</div>
-				<div>
 					<label>Pattern type:</label>
 					<div class="input-cell">
 						<label id="wildcardtype">
@@ -86,14 +73,6 @@
 						<label id="regextype">
 							<input type="radio" ng-change="redirect.updateExampleResult()" ng-model="redirect.patternType" name="patterntype" value="R">Regular Expression</label>
 					</div>
-				</div>
-				<div>
-					<label>Pattern Description:</label>
-					<div class="input-cell"><input type="text" ng-model="redirect.patternDesc" placeholder="Describe your pattern" /></div>
-				</div>
-				<div>
-					<label>Example result:</label>
-					<div class="input-cell"><span class="error example-result-error" ng-show="redirect.error">{{redirect.error}}</span><span class="example-result" ng-show="redirect.exampleResult">{{redirect.exampleResult}}</span></div>
 				</div>
 			</div>
 			<div id="advanced-toggle">
@@ -129,7 +108,7 @@
 				</div>
 			</div>
 			<div class="button-container">
-				<a ng-class="{disabled:redirect.error || redirect.includePattern == ''}" class="btn green large" ng-click="saveRedirect()">Save</a>
+				<a ng-class="{disabled:redirect.error || redirect.includePattern == ''}" class="btn green large" ng-click="saveBlockedSite()">Save</a>
 				<a class="btn red large" ng-click="cancelEdit()">Cancel</a>
 			</div>
 		</div>
@@ -141,6 +120,8 @@
             <h5>Check in with yourself</h5>
 
 			<div id="menu">
+
+                <a class="btn green large" href="block-journal.html"><< Back </a>
 				<a class="btn blue large" ng-click="createNewRedirect()">Create new redirect</a>
 
 				<!-- Importing/Exporting of redirects -->
@@ -199,38 +180,5 @@
 			<footer>
                 <small>Block Journal is a fork of <a target="_blank" href="http://einaregilsson.com">Einar Egilsson's</a> <a target="_blank" href="http://github.com/einaregilsson/Redirector">Redirector</a></small>
 			</footer>
-
-            <p>Is there something you feel weird about? And some website that you associate with this weird feeling, and you find yourself going there even though you tell yourself not to?</p>
-
-            <p>The purpose of this tool isn't to make you feel guilty and/or to stop you from going to your blocked pages -- it's just to give yourself a record of how your feelings about them exist and change.</p>
-
-            <h3>Some writing prompts</h3>
-            <ul>
-                <li>What were you up to before navigating here?</li>
-                <li>How are you feeling today?</li>
-                <li>Is there something specific you're looking to find out or revisit by going to this page?</li>
-                </ul>
-
-            <h3>Examples</h3>
-            <ul>
-                <li>There's an acquaintance from college whose LinkedIn page you keep returning to (ha, I don't know if this is a realistic scenario, but maybe!). Why? I don't know. Here are some examples of things I might think before going there:</li>
-                <ul><li>"I wonder what she's up to."</li>
-                    <li>"She was always better at chemistry than me, it makes sense she got that job."</li>
-                    <li>"I wonder if her LinkedIn profile is even updated regularly.""</li></ul>
-                <li>You are in love with a particular camgirl, but you're hard on yourself for continuing to her live vids. How are you feeling when you choose to go there? Why are you hard on yourself about it?</li>
-                <ul><li>"I hope she's online. If she's not online... I guess I'll go for a run or something."</li>
-                    <li>"I really don't want to finish writing this email to my boss so I'm just going to go here for a sec to unwind."</li>
-                    <li>"I think I might post in the chat today. Maybe she'll respond and we'll eventually get to know each other and I can mod for her sometime."</li>
-                    <li>"I wonder what my ex is doing right now."</li>
-                    <li>"I spent too long in here last time, I should try to just stay 10 minutes..."</li>
-                    <li>"I don't want to think/talk/write about it."</li></ul>
-                <li>You keep googling "why am I so sad?". There's some good resources on the internet for dealing with depression, and some helpful articles come up. Just check in with yourself first -- what's the sadness feel like today, in your own words? Who knows, maybe you can use these journal entries one day for a blog that comes up when someone else googles "why am i so sad".</li>
-                <ul><li>"Ugh."</li>
-                    <li>"WHY AM I SO SAD"</li>
-                    <li>"I don't want to do anything today. Called out of work and don't want to go grocery shopping and don't want to watch TV what is wrong with meeeeeeeee"</li>
-                    <li>"Are you ever even going to read this I need to distable this extension this is annoying."</li>
-                    </ul>
-                </ul>
-		</div>
 	</body>
 </html>

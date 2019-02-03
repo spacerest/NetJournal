@@ -31,13 +31,13 @@ def create_addon(files, browser):
 	else:
 		ext = 'zip'
 
-	output_file = os.path.join(output_folder, 'redirector-%s.%s' % (browser,ext))
+	output_file = os.path.join(output_folder, 'block-journal-%s.%s' % (browser,ext))
 	zf = zipfile.ZipFile(output_file, 'w', zipfile.ZIP_STORED)
 	cert = 'extension-certificate.pem'
 
 	print ''
 	print '**** Creating addon for %s ****' % browser
-	
+
 	if browser == 'opera' and not os.path.exists(cert):
 		print 'Extension certificate does not exist, cannot create .nex file for Opera'
 		return
@@ -54,10 +54,10 @@ def create_addon(files, browser):
 				del manifest['background']['persistent'] #Firefox chokes on this, is always persistent anyway
 
 			if browser == 'opera':
-				manifest['options_ui']['page'] = 'redirector.html' #Opera opens options in new tab, where the popup would look really ugly
+				manifest['options_ui']['page'] = 'block-journal.html' #Opera opens options in new tab, where the popup would look really ugly
 				manifest['options_ui']['chrome_style'] = False
 
-			zf.writestr(f[2:], json.dumps(manifest, indent=2)) 
+			zf.writestr(f[2:], json.dumps(manifest, indent=2))
 		else:
 			zf.write(f[2:])
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 	os.chdir(folder)
 
 	files = get_files_to_zip()
-	
+
 	print '******* REDIRECTOR BUILD SCRIPT *******'
 	print ''
 
