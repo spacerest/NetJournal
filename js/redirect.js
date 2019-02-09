@@ -91,6 +91,8 @@ Redirect.prototype = {
 			isExcludeMatch : false,
 			isDisabledMatch : false,
 			redirectTo : '',
+			description : '',
+			includePattern : '',
 			toString : function() { return JSON.stringify(this); }
 		};
 		var redirectTo = null;
@@ -104,6 +106,8 @@ Redirect.prototype = {
 			} else {
 				result.isMatch = true;
 				result.redirectTo = redirectTo;
+				result.description = this.description;
+				result.includePattern = this.includePattern;
 			}
 		}
 		return result;

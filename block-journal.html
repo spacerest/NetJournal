@@ -16,6 +16,7 @@
 		<script src="js/controllers/deleteredirect.js"></script>
 		<script src="js/controllers/importexport.js"></script>
 		<script src="js/controllers/listredirects.js"></script>
+		<script src="js/controllers/blockJournalInfo.js"></script>
 	</head>
 	<body ng-app="redirectorApp" ng-controller="RedirectorPageCtrl" class="private">
 		<div id="cover" ng-show="showEditForm || showDeleteForm">
@@ -160,13 +161,18 @@
             <div>
                 <textarea placeholder="What are you thinking about?"></textarea>
 			<div class="menu">
-				<a class="btn red large float-left" href="cancel.html">Cancel</a>
-                <a class="btn grey large float-left" href"cancel.html">Skip</a>
+                <p class="btn grey large float-right" id="skipBtn" href"cancel.html">Skip</p>
 				<p class="btn green large float-right" id="submitBtn">Submit</a>
 			</div>
 
 
+            <div class="block-info" ng-controller="BlockJournalInfo">
+                <p>url: {{ blockedSite }}</p>
+                <p>description: {{ blockedSiteDescription }}</p>
+                <p>url pattern: {{ blockedSitePattern }}</p>
 
+
+            </div>
         </div>
 
 

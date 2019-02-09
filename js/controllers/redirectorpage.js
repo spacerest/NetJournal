@@ -2,7 +2,7 @@
 // modal windows and loading and saving the list of redirects, that all of the
 // controllers work with.
 redirectorApp.controller('RedirectorPageCtrl', ['$scope', '$timeout', function($s, $timeout) {
-	
+
 	$s.deleting = null;  //Variable for redirect being edited, of the form { index:<nr>, redirect:<redirect>};
 	$s.showEditForm = $s.showDeleteForm = false; // Variables, child controllers can set them to show their forms
 
@@ -31,15 +31,15 @@ redirectorApp.controller('RedirectorPageCtrl', ['$scope', '$timeout', function($
 		    }
 		});
 	}
-	
-	// Default is LOCAL storage, allow user to select toggle to Sync if they wish 
+
+	// Default is LOCAL storage, allow user to select toggle to Sync if they wish
 	$s.isSyncEnabled = false;
-	
+
 	chrome.storage.local.get({isSyncEnabled:false},function(obj){
 		$s.isSyncEnabled = obj.isSyncEnabled;
-		$s.$apply();		
+		$s.$apply();
 	});
-	
+
 	$s.toggleSyncSetting = function(){
 		chrome.runtime.sendMessage({type:"ToggleSync", isSyncEnabled: !$s.isSyncEnabled}, function(response) {
 			if(response.message === "syncEnabled"){
@@ -61,9 +61,9 @@ redirectorApp.controller('RedirectorPageCtrl', ['$scope', '$timeout', function($
 			$s.$apply();
 		});
 	}
-	
+
  	$s.redirects = [];
-	
+
 	//Need to proxy this through the background page, because Firefox gives us dead objects
 	//nonsense when accessing chrome.storage directly.
 	chrome.runtime.sendMessage({type: "getredirects"}, function(response) {
@@ -72,7 +72,12 @@ redirectorApp.controller('RedirectorPageCtrl', ['$scope', '$timeout', function($
 			$s.redirects.push(normalize(response.redirects[i]));
 		}
 		$s.$apply();
-	}); 	
+	});
+
+    chrome.runtime.sendMessage({type: "getcurrentredirect"}, function(response) {
+        console.log('Received get block message, its:' + response)
+        $s.$apply();
+    })
 
  	// Shows a message bar above the list of redirects.
  	$s.showMessage = function(message, success) {
@@ -80,7 +85,7 @@ redirectorApp.controller('RedirectorPageCtrl', ['$scope', '$timeout', function($
  		$s.messageType = success ? 'success' : 'error';
 		var timer = 20;
 		/*if($s.message.indexOf("Error occured")>-1 || $s.message.indexOf("Sync Not Possible")>-1 || $s.message.indexOf("Redirects failed to save")>-1 ){
-			timer = 10; 
+			timer = 10;
 			//  just to reload the page - when I tested, $s.$apply() didn't refresh as I expected for "Sync Not Possible".
 			// Reloading the page is going to getRedirects and show actual values to user after showing 10 seconds error message
 		} */

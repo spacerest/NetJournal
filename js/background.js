@@ -26,6 +26,8 @@ var ignoreNextRequest = {
 //Key is tabID, value is dict:
 //                  { "url":
 //                    "timeRedirected":
+//					  "blockDescription"
+//
 //                  }
 
 var navigateHistory = {
@@ -79,7 +81,6 @@ function checkRedirects(details) {
 	log('Checking: ' + details.type + ': ' + details.url);
 
 	var list = partitionedRedirects[details.type];
-    console.log(list);
 	if (!list) {
 		log('No list for type: ' + details.type);
 		return {};
@@ -95,8 +96,42 @@ function checkRedirects(details) {
 	for (var i = 0; i < list.length; i++) {
 		var r = list[i];
 		var result = r.getMatch(details.url);
+		//console.log("Result urlPattern is : " + result.includePattern);
+		//console.log("Result  is : " + result);
+
+        //console.log("checking if its a match " + result + " " + list[i]);
 
 		if (result.isMatch) {
+
+            //BLOCK JOURNAL addition
+            //check whether we've already gone through the journal page on the
+            //way to this blocked page for this tab
+            //TODO what if the user wants to open a link in a new tab from an existing
+            //blocked page
+            //TODO remove a tab/url combo when the user navigates away from
+            //this blocked place
+            if (navigateHistory[details.tabId]) {
+            	var newBlockSameTab = false;
+            	//loop through the list again, looking for which one matches our new url
+                for (var j = 0; j < list.length; j++) {
+                	//get the blockUrl item for this index
+                    var r2 = list[j];
+                    //check if it matches our current url
+                    var result2 = r2.getMatch(navigateHistory[details.tabId]["url"]);
+                    console.log("comparing i: " + i + " " + result.description + " against j: " + j + " " + result2.description);
+                    //if it matches our current url and it's the same index that ... ?
+                    if (result2.isMatch && i == j) {
+                        console.log("We are now on " + details.url + " and we have " +
+                                navigateHistory[details.tabId]["url"] + " saved in our navigate history");
+                        return {};
+                    } 
+                }
+                newBlockSameTab = true;     
+   				//navigateHistory[details.tabId] = {}
+                //navigateHistory[details.tabId]["url"] = details.url;                        
+                //navigateHistory[details.tabId]["urlPattern"] = result.includePattern;
+                //navigateHistory[details.tabId]["blockDescription"] = result.description;
+            } 
 
 			//Check if we're stuck in a loop where we keep redirecting this, in that
 			//case ignore!
@@ -120,10 +155,35 @@ function checkRedirects(details) {
 			}
 			ignoreNextRequest[result.redirectTo] = new Date().getTime();
 
-            navigateHistory[details.tabId] = { "url": details.url, "timeRedirected": new Date().getTime() };
-            console.log(navigateHistory);
+            navigateHistory[details.tabId] = { 
+            	"url": details.url, 
+           		"timeRedirected": new Date().getTime(),
+           		"blockDescription": result.description,
+           		"urlPattern": result.includePattern
+           	};
+            console.log("navigate history is: " + JSON.stringify(navigateHistory, null, 4));
 
-			return { redirectUrl: result.redirectTo };
+            // redirect to block journal extension, saving the destination url
+            // in the uri
+            // source: https://github.com/tetsuwo/website-blocker-chrome.ext
+			return { redirectUrl: chrome.extension.getURL('block-journal.html') + '?url=' + encodeURIComponent(details.url) };
+		} 
+	}
+
+	for (var i = 0; i < list.length; i++) {
+		var r = list[i];
+		var result = r.getMatch(details.url);
+		if (!result.isMatch ) {
+			console.log("result is " + result);
+			console.log(details.url);
+
+			//if this tab was previously a blocked site, let's erase that
+			if (navigateHistory[details.tabId]) {
+				console.log("we're moving away from a blocked site on this tab, so let's start fresh");
+				console.log(JSON.stringify(details, 4, null));
+				console.log(JSON.stringify(result, 4, null));
+				delete navigateHistory[details.tabId];
+			}
 		}
 	}
 
@@ -281,6 +341,19 @@ chrome.runtime.onMessage.addListener(
 				});
 			}
 			});
+		} else if (request.type == 'getcurrentredirect') {
+			var blockedSite = navigateHistory[sender.tab.id]['url'];
+			var blockedSiteDescription = navigateHistory[sender.tab.id]['blockDescription'];
+			var blockedSitePattern = navigateHistory[sender.tab.id]["urlPattern"];
+			console.log(chrome.tabID);
+			sendResponse(
+				{
+					blockedSite: blockedSite,	
+					blockedSiteDescription: blockedSiteDescription,
+					blockedSitePattern: blockedSitePattern
+
+				}
+		)
 		} else if (request.type == 'ToggleSync') {
 			// Notes on Toggle Sync feature here https://github.com/einaregilsson/Redirector/issues/86#issuecomment-389943854
 			// This provides for feature request - issue 86
