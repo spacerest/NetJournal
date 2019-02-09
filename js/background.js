@@ -34,6 +34,12 @@ var navigateHistory = {
 
 }
 
+//variables to check whether a new tab (probably) is opened from a link inside an existing tab 
+var previousTabId;
+var newTabId;
+
+
+
 //url => { timestamp:ms, count:1...n};
 var justRedirected = {
 
@@ -65,9 +71,41 @@ function continueToBlockedSite(details) {
     delete navigationHistory[details.tabId];
 }
 
+function checkNewTab(details) {
+	console.log("NEW TAB CREATED");
+	console.log("opener tab id is " + details.openerTabId);
+	console.log(JSON.stringify(details, 4, null));
+	newTabId = details.id;
+	var list = partitionedRedirects['main_frame']; //hardcoded mainframe, i don't know if I'll need subframe or image?
+	//https://developer.chrome.com/extensions/webRequest for more details
+	var newUrl = details.url;
+	//var oldUrl = "test";
+
+	//check if the last tab we were on was blocked
+	if (navigateHistory[previousTabId]) {
+		console.log("last tab was a match");
+		//if it was blocked, lets see if the current tab is blocked per the same
+		for (var i = 0; i < list.length; i++) {
+			var r = list[i];
+			var result = r.getMatch(newUrl);
+			if (result.isMatch) {
+				console.log("yes, also a match");
+				navigateHistory[details.id] = {};
+				navigateHistory[details.id] = navigateHistory[details.openerTabId];
+			}
+		}
+	}
+    previousTabId = newTabId;
+}
+
+
+
 //This is the actual function that gets called for each request and must
 //decide whether or not we want to redirect.
 function checkRedirects(details) {
+	console.log("NEW REDIRECT NOW");
+	log("details type is " + details.type);
+	prevousTabId = details.tabId;
 
     //TODO We check if this is a redirect to Journal, or away from
     var awayFromJournal = false;
@@ -161,6 +199,8 @@ function checkRedirects(details) {
            		"blockDescription": result.description,
            		"urlPattern": result.includePattern
            	};
+           	console.log(details);
+           	console.log(details.openerTabId);
             console.log("navigate history is: " + JSON.stringify(navigateHistory, null, 4));
 
             // redirect to block journal extension, saving the destination url
@@ -174,7 +214,6 @@ function checkRedirects(details) {
 		var r = list[i];
 		var result = r.getMatch(details.url);
 		if (!result.isMatch ) {
-			console.log("result is " + result);
 			console.log(details.url);
 
 			//if this tab was previously a blocked site, let's erase that
@@ -262,6 +301,11 @@ function createPartitionedRedirects(redirects) {
 		}
 	}
 	return partitioned;
+}
+
+function setupNewTabListener() {
+
+	chrome.tabs.onCreated.addListener(checkNewTab);
 }
 
 //Sets up the listener, partitions the redirects, creates the appropriate filters etc.
@@ -472,6 +516,7 @@ function setupInitial() {
 		disabled: false
 	}, function (obj) {
 		if (!obj.disabled) {
+			setupNewTabListener();
 			setUpRedirectListener();
 		} else {
 			log('Redirector is disabled');
