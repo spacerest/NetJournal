@@ -27,7 +27,6 @@ var ignoreNextRequest = {
 //                  { "url":
 //                    "timeRedirected":
 //					  "blockDescription"
-//
 //                  }
 
 var navigateHistory = {
@@ -35,9 +34,23 @@ var navigateHistory = {
 }
 
 //variables to check whether a new tab (probably) is opened from a link inside an existing tab 
-var previousTabId;
-var newTabId;
+var previousTabId = -1;
+var nextTabId = -2;
 
+function getRuleIndex(requestType, url) {
+	var list = partitionedRedirects[requestType];
+	var ruleIndex = -1;
+
+	for (var i = 0; i < list.length; i++) {
+		var r = list[i];
+		result = r.getMatch(url);
+		if (result.isMatch) {
+			ruleIndex = i;
+			break;
+		}
+	}
+	return ruleIndex;
+}
 
 
 //url => { timestamp:ms, count:1...n};
@@ -66,56 +79,31 @@ function setIcon(image) {
 //This is the function that gets called when the user wants to save the journal
 //and continue to the original destination
 function continueToBlockedSite(details) {
-    console.log("submit was clicked?");
     destinationUrl = navigationHistory[details.tabId][url];
     delete navigationHistory[details.tabId];
 }
 
-function checkNewTab(details) {
-	console.log("NEW TAB CREATED");
-	console.log("opener tab id is " + details.openerTabId);
-	console.log(JSON.stringify(details, 4, null));
-	newTabId = details.id;
-	var list = partitionedRedirects['main_frame']; //hardcoded mainframe, i don't know if I'll need subframe or image?
-	//https://developer.chrome.com/extensions/webRequest for more details
-	var newUrl = details.url;
-	//var oldUrl = "test";
+function logClosedTab(tabId) {
+	console.log("a tab was closed with tab " + tabId);
 
-	//check if the last tab we were on was blocked
-	if (navigateHistory[previousTabId]) {
-		console.log("last tab was a match");
-		//if it was blocked, lets see if the current tab is blocked per the same
-		for (var i = 0; i < list.length; i++) {
-			var r = list[i];
-			var result = r.getMatch(newUrl);
-			if (result.isMatch) {
-				console.log("yes, also a match");
-				navigateHistory[details.id] = {};
-				navigateHistory[details.id] = navigateHistory[details.openerTabId];
-			}
-		}
+	if (navigateHistory[tabId]) {
+		console.log("a tab " + tabId + " is just about to be deleted, since we closed it");
+		delete navigateHistory[tabId];
 	}
-    previousTabId = newTabId;
 }
-
-
 
 //This is the actual function that gets called for each request and must
 //decide whether or not we want to redirect.
 function checkRedirects(details) {
-	console.log("NEW REDIRECT NOW");
-	log("details type is " + details.type);
-	prevousTabId = details.tabId;
-
-    //TODO We check if this is a redirect to Journal, or away from
-    var awayFromJournal = false;
+	console.log("checking a new re-direct, url is " + details.url + " and id is " + details.tabId);
+	console.log(navigateHistory);
+	var newBlockSameTab = false;
 
 	//We only allow GET request to be redirected, don't want to accidentally redirect
 	//sensitive POST parameters
 	if (details.method != 'GET') {
 		return {};
 	}
-    console.log(details);
 	log('Checking: ' + details.type + ': ' + details.url);
 
 	var list = partitionedRedirects[details.type];
@@ -131,44 +119,98 @@ function checkRedirects(details) {
 		return {};
 	}
 
+	//get tabIds of previous and upcoming tab, in case the user has opened a new
+	//tab from within an existing one
+	if (details.tabId != previousTabId) {
+		previousTabId = nextTabId;
+		nextTabId = details.tabId;
+	}
+
+	if (navigateHistory[previousTabId]) {
+		log("last page was blocked");
+		var previousBlockIndex;
+		var nextBlockIndex;
+		//check what rule list index is associated with this block
+		previousBlockIndex = getRuleIndex(details.type, navigateHistory[previousTabId]['url'])
+
+		//check if and what rule list index is associated with the current url
+		nextBlockIndex = getRuleIndex(details.type, details.url)
+
+		//if it's the same index, then they're both blocked for the same reason and the user has 
+		//already seen the block screen for this visit
+
+			console.log(previousTabId);
+			console.log(nextTabId);
+			console.log(previousBlockIndex);
+			console.log(nextBlockIndex);
+			console.log(details.tabId);
+			console.log(details.url);
+
+		if (previousBlockIndex == nextBlockIndex) {
+			console.log("it's the same rule, so lets not block it");
+			var r = list[nextBlockIndex];
+			var result = r.getMatch(details.url);
+			if (result.isMatch) {
+				navigateHistory[nextTabId] = {
+	            	"url": details.url, 
+	           		"timeRedirected": new Date().getTime(),
+	           		"blockDescription": result.description,
+	           		"urlPattern": result.includePattern
+	           	};
+	           	return { };
+
+           }
+		}
+
+		else if (navigateHistory[previousTabId] && previousBlockIndex != nextBlockIndex && details.id) {
+			console.log(previousTabId);
+			console.log(nextTabId);
+			console.log(details.id);
+			console.log(details.url);
+
+			console.log("last rule we saw is different from new rule, so let's re-do this block");
+			var r = list[nextBlockIndex];
+			var result = r.getMatch(details.url);
+			if (result.isMatch) {
+				navigateHistory[nextTabId] = {
+	            	"url": details.url, 
+	           		"timeRedirected": new Date().getTime(),
+	           		"blockDescription": result.description,
+	           		"urlPattern": result.includePattern
+	           	};
+           }
+           	newBlockSameTab = true;
+		} else if (previousBlockIndex != nextBlockIndex && previousBlockIndex != -1 && previousTabId == nextTabId) {
+			//erases the navHist key if a tab is moving to a different
+			//block rule
+			log("we're moving away from a blocked site on this tab, so let's start fresh");
+			//delete navigateHistory[previousTabId];
+		}
+	}
+
+	//previousTabId = details.tabId;
+
 	for (var i = 0; i < list.length; i++) {
 		var r = list[i];
 		var result = r.getMatch(details.url);
-		//console.log("Result urlPattern is : " + result.includePattern);
-		//console.log("Result  is : " + result);
-
-        //console.log("checking if its a match " + result + " " + list[i]);
 
 		if (result.isMatch) {
 
             //BLOCK JOURNAL addition
             //check whether we've already gone through the journal page on the
             //way to this blocked page for this tab
-            //TODO what if the user wants to open a link in a new tab from an existing
-            //blocked page
-            //TODO remove a tab/url combo when the user navigates away from
-            //this blocked place
             if (navigateHistory[details.tabId]) {
-            	var newBlockSameTab = false;
             	//loop through the list again, looking for which one matches our new url
                 for (var j = 0; j < list.length; j++) {
                 	//get the blockUrl item for this index
                     var r2 = list[j];
                     //check if it matches our current url
                     var result2 = r2.getMatch(navigateHistory[details.tabId]["url"]);
-                    console.log("comparing i: " + i + " " + result.description + " against j: " + j + " " + result2.description);
                     //if it matches our current url and it's the same index that ... ?
-                    if (result2.isMatch && i == j) {
-                        console.log("We are now on " + details.url + " and we have " +
-                                navigateHistory[details.tabId]["url"] + " saved in our navigate history");
+                    if (result2.isMatch && i == j && !newBlockSameTab) {
                         return {};
                     } 
                 }
-                newBlockSameTab = true;     
-   				//navigateHistory[details.tabId] = {}
-                //navigateHistory[details.tabId]["url"] = details.url;                        
-                //navigateHistory[details.tabId]["urlPattern"] = result.includePattern;
-                //navigateHistory[details.tabId]["blockDescription"] = result.description;
             } 
 
 			//Check if we're stuck in a loop where we keep redirecting this, in that
@@ -199,32 +241,12 @@ function checkRedirects(details) {
            		"blockDescription": result.description,
            		"urlPattern": result.includePattern
            	};
-           	console.log(details);
-           	console.log(details.openerTabId);
-            console.log("navigate history is: " + JSON.stringify(navigateHistory, null, 4));
 
-            // redirect to block journal extension, saving the destination url
-            // in the uri
-            // source: https://github.com/tetsuwo/website-blocker-chrome.ext
+
 			return { redirectUrl: chrome.extension.getURL('block-journal.html') + '?url=' + encodeURIComponent(details.url) };
 		} 
 	}
 
-	for (var i = 0; i < list.length; i++) {
-		var r = list[i];
-		var result = r.getMatch(details.url);
-		if (!result.isMatch ) {
-			console.log(details.url);
-
-			//if this tab was previously a blocked site, let's erase that
-			if (navigateHistory[details.tabId]) {
-				console.log("we're moving away from a blocked site on this tab, so let's start fresh");
-				console.log(JSON.stringify(details, 4, null));
-				console.log(JSON.stringify(result, 4, null));
-				delete navigateHistory[details.tabId];
-			}
-		}
-	}
 
   	return {};
 }
@@ -303,9 +325,9 @@ function createPartitionedRedirects(redirects) {
 	return partitioned;
 }
 
-function setupNewTabListener() {
-
-	chrome.tabs.onCreated.addListener(checkNewTab);
+function setUpClosedTabListener() {
+	console.log("setting up closed tab listener");
+	chrome.tabs.onRemoved.addListener(logClosedTab);
 }
 
 //Sets up the listener, partitions the redirects, creates the appropriate filters etc.
@@ -368,7 +390,6 @@ chrome.runtime.onMessage.addListener(
 				log('Sent redirects to content page');
 			});
 		} else if (request.type == 'saveredirects') {
-			console.log('Saving redirects, count=' + request.redirects.length);
 			delete request.type;
 			storageArea.set(request, function (a) {
 				if(chrome.runtime.lastError) {
@@ -389,7 +410,6 @@ chrome.runtime.onMessage.addListener(
 			var blockedSite = navigateHistory[sender.tab.id]['url'];
 			var blockedSiteDescription = navigateHistory[sender.tab.id]['blockDescription'];
 			var blockedSitePattern = navigateHistory[sender.tab.id]["urlPattern"];
-			console.log(chrome.tabID);
 			sendResponse(
 				{
 					blockedSite: blockedSite,	
@@ -516,7 +536,7 @@ function setupInitial() {
 		disabled: false
 	}, function (obj) {
 		if (!obj.disabled) {
-			setupNewTabListener();
+			setUpClosedTabListener();
 			setUpRedirectListener();
 		} else {
 			log('Redirector is disabled');
