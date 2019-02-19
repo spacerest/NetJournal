@@ -1,9 +1,14 @@
 {
 
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Block Journal",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj/t8vyAxWJ6xPGBEBeken47WS9qewPihdV05c8eoeGKRLAGMDjnz2W0ZDFlOj9iNj6M1CWz++Kbts6AW35EH2QBYFupSzb2/SJFAR98WXiTrI8FxDDpzNYKwlly7gTxTltMLaVBVyjxeqtKRMXwCuezUR2IuN3+4wBVW/GSOir5Q4PtADgBGydy7Vz7aLC2SM0ZRnIeLa2zESqeVK56pZhRGFxD4iYVPNRGZn636JUmz4ebdeTOuFkDL4sH5WF/Ajz1j59115BDPHKLZoppNcvrmobhjYIT19UKA3D3VjZ+iqBb9lZ/YlptVXdSd3VGY591CWTXnYR9z92ZPGvDGEQIDAQAB",
   "description": "Ask yourself to write a short reflection each time you visit a website that you've decided you'd like to visit less",
   "version": "1.0.0",
+  "oauth2": {
+    "client_id": "564948550944-vtpr0cm8459ke1n8g1unjcj8u9b4ikgc.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/drive"]
+  },
 
   "icons": {   "16": "images/icon-active-16.png",
                "32": "images/icon-active-32.png",
@@ -11,7 +16,7 @@
                "64": "images/icon-active-64.png",
               "128": "images/icon-active-128.png" },
 
-  "permissions" : ["webRequest", "webRequestBlocking", "storage", "tabs", "http://*/*", "https://*/*", "notifications", "unlimitedStorage"],
+  "permissions" : ["identity", "webRequest", "webRequestBlocking", "storage", "tabs", "http://*/*", "https://*/*", "notifications", "unlimitedStorage"],
 
  "background": {
     "scripts": ["js/redirect.js", "js/background.js"],

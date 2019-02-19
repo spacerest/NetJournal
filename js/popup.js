@@ -50,7 +50,7 @@ angular.module('popupApp', []).controller('PopupCtrl', ['$scope', function($s) {
 	$s.openBlockJournalSettings = function() {
 
 		//switch to open one if we have it to minimize conflicts
-		var url = chrome.extension.getURL('settings.html');
+		var url = chrome.extension.getURL('settings_menu.html');
 
 		//FIREFOXBUG: Firefox chokes on url:url filter if the url is a moz-extension:// url
 		//so we don't use that, do it the more manual way instead.

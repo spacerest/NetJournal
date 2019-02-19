@@ -162,10 +162,10 @@ function checkRedirects(details) {
            }
 		}
 
-		else if (navigateHistory[previousTabId] && previousBlockIndex != nextBlockIndex && details.id) {
+		else if (navigateHistory[previousTabId] && previousBlockIndex != nextBlockIndex && details.url && nextBlockIndex >= 0) {
 			console.log(previousTabId);
 			console.log(nextTabId);
-			console.log(details.id);
+			console.log(details.tabId);
 			console.log(details.url);
 
 			console.log("last rule we saw is different from new rule, so let's re-do this block");
@@ -586,6 +586,8 @@ chrome.runtime.onStartup.addListener(handleStartup);
 function handleStartup(){
 	enableNotifications=false;
 	chrome.storage.local.set({
-		enableNotifications: false
+		enableNotifications: false,
+		googleDocsOption: false,
+		downloadOption: true
 	});
 }

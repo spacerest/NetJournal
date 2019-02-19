@@ -119,10 +119,17 @@
 			<h1>Block Journal</h1>
             <h5>Check in with yourself</h5>
 
-			<div id="menu">
+            <div class="menu">
 
-                <a class="btn green large" href="block-journal.html"><< Back </a>
-				<a class="btn blue large" ng-click="createNewRedirect()">Create new redirect</a>
+				<a class="btn blue large" href="settings.html">What Sites am I Journaling?</a>
+				<a class="btn blue large" href="storage_settings.html" >Where is my Journal Saved?</a>
+
+
+			</div>
+
+			<div class="menu">
+
+				<a class="btn blue large" ng-click="createNewRedirect()">Add a site</a>
 
 				<!-- Importing/Exporting of redirects -->
 				<span ng-controller="ImportExportCtrl">

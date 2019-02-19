@@ -6,12 +6,13 @@
 		<meta charset="UTF-8">
 		<script src="js/angular.min.js"></script>
 		<script src="js/popup.js"></script>
+
 	</head>
 	<body ng-app="popupApp" ng-controller="PopupCtrl">
 		<h1>Block Journal</h1>
 		<div class="disabled"><span ng-show="disabled">Disabled</span></div>
 		<button ng-click="toggleDisabled()">{{disabled ? 'Enable' : 'Disable'}}</button>
-        <button ng-click="openBlockJournalSettings()">Edit Blocked Sites</button>
+        <button ng-click="openBlockJournalSettings()">Edit Journal Settings</button>
 		<label><input type="checkbox" ng-model="logging" ng-click="toggleLogging()" /> Enable logging</label>
 		<label><input type="checkbox" ng-model="enableNotifications" ng-click="toggleNotifications()" /> Enable notifications</label>
 	</body>

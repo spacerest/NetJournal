@@ -50,7 +50,7 @@ input[type="radio"] {
 
 /* Classes for buttons and other stuff */
 
-.btn {
+.btn, button {
   background:white;
   border:solid 1px #bbb;
   border-radius:2px;
@@ -139,8 +139,8 @@ input[type="radio"] {
 
 /* Main menu with buttons */
 
-.menu {
-  height: 30px;
+.menu, .centered-body {
+  /*height: 30px;*/
   margin: 30px auto 8px auto;
   max-width: 90%;
   text-align: center;
@@ -483,7 +483,7 @@ footer small a:hover {
 
 /* Hide by default so we can show a message in private mode where angular won't load */
 
-.private #edit-redirect-form, .private #delete-redirect-form, .private .redirect-table, .private #message-box, .private #menu {
+.private #edit-redirect-form, .private #delete-redirect-form, .private .redirect-table, .private #message-box, .private .menu {
   display:none;
 }
 
