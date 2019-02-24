@@ -1,18 +1,22 @@
+//'use strict';
+
+/*
+angular.module('redirectorApp', []).controller('GoogleOauthCtrl', ['$scope', function($s) {
+
+
 // Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
 
-window.onload = function() {
-  document.getElementById('google-auth').addEventListener('click', function() {
+  $s.authGoogle=function(){
     chrome.identity.getAuthToken({interactive: true}, function(token) {
-
-
-      console.log(token);
+        console.log( $s.downloadOption );
+        console.log( "hi" );
+        console.log(token);
     });
-  });
-};
+  }
+}]);
 
 /* TODO: I don't remember where I got htis, but look at it later
   if (gapi.auth.getToken() != null && gapi.client != null && gapi.client.drive != null && gapi.client.drive.files != null) {

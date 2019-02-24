@@ -35,7 +35,9 @@
 
 				<label><input type="checkbox" ng-model="googleDocsOption" ng-click="toggleGoogleDocsOption()" />Save to Google Docs</label>
 
-				<button class="btn green large" id="google-auth">Sign into Google Account</button>
+				<div> 
+					<button ng-click="toggleGoogleAuth()" class="btn green large" id="google-auth">{{signedIntoGoogle ? 'Sign Out of Google Account' : 'Sign Into Google Account'}}</button>
+				</div>
 
 			</br>
 			</br>

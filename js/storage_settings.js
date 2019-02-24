@@ -7,6 +7,51 @@ angular.module('redirectorApp', []).controller('StorageCtrl', ['$scope', functio
 		$s.$apply();
 	});
 
+	chrome.identity.getAuthToken({interactive: false}, function(token) {
+		if (chrome.runtime.lastError) {
+        	console.log("not signed in");
+        	$s.signedIntoGoogle = false;
+        	$s.$apply();
+        	return;
+      	} else {
+      		console.log("signed in");
+      		$s.signedIntoGoogle = true;
+      		$s.$apply();
+      		return;
+      	}
+		//console.log(token);
+	});
+
+	$s.toggleGoogleAuth = function() {
+		if ($s.signedIntoGoogle) {
+			$s.logoutGoogle();
+		} else {
+			$s.authGoogle();
+		}
+	}
+
+	$s.authGoogle=function(){
+    	chrome.identity.getAuthToken({interactive: true}, function(token) {
+        	$s.signedIntoGoogle = true;
+        	$s.$apply();
+   		});
+  	};
+
+  	$s.logoutGoogle=function() {
+  		chrome.identity.getAuthToken({interactive: true}, function(token) {
+  			var url = 'https://accounts.google.com/o/oauth2/revoke?token=' + token;
+			window.fetch(url);
+
+			chrome.identity.removeCachedAuthToken({token: token}, function (){
+  				alert('removed');
+  				$s.signedIntoGoogle = false;
+  				$s.$apply();
+  				console.log("was removed and now signedIntoGoogle is " + $s.signedIntoGoogle);
+
+  			});
+		});
+  	};
+
 	$s.toggleDownloadOption = function() {
 		storage.get({downloadOption:false}, function(obj) {
 			storage.set({downloadOption:!obj.downloadOption});
@@ -18,7 +63,9 @@ angular.module('redirectorApp', []).controller('StorageCtrl', ['$scope', functio
 				console.log("hey");
 				if (inner_obj.googleDocsOption && !obj.downloadOption) {
 					//toggleGoogleDocsOption();
-					$s.toggleGoogleDocsOption(); 
+					//$s.toggleGoogleDocsOption(); 
+					$s.googleDocsOption = !inner_obj.googleDocsOption;
+		  			$s.$apply();
 					console.log("google docs option was true...");
 				} else {
 					console.log("google docs option wasnt true...?");
@@ -46,7 +93,9 @@ angular.module('redirectorApp', []).controller('StorageCtrl', ['$scope', functio
 				console.log("hey");
 				if (inner_obj.downloadOption && !obj.googleDocsOption) {
 					//toggleGoogleDocsOption();
-					$s.toggleDownloadOption(); 
+					//$s.toggleDownloadOption(); 
+					$s.downloadOption = !inner_obj.downloadOption;
+		  			$s.$apply();
 					console.log("download  option was true...");
 				} else {
 					console.log("download  option wasnt true...?");
