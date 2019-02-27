@@ -1,3 +1,4 @@
+
 angular.module('redirectorApp', []).controller('StorageCtrl', ['$scope', function($s) {
 
 	var storage = chrome.storage.local; //TODO: Change to sync when Firefox supports it...
@@ -16,6 +17,7 @@ angular.module('redirectorApp', []).controller('StorageCtrl', ['$scope', functio
       	} else {
       		console.log("signed in");
       		$s.signedIntoGoogle = true;
+      		console.log(token);
       		$s.$apply();
       		return;
       	}
@@ -34,8 +36,32 @@ angular.module('redirectorApp', []).controller('StorageCtrl', ['$scope', functio
     	chrome.identity.getAuthToken({interactive: true}, function(token) {
         	$s.signedIntoGoogle = true;
         	$s.$apply();
+
+	       	var xml = new XMLHttpRequest(); 
+	   		//xhr.open("GET", "http://www.example.com?par=0", false);
+	   		xml.open('GET', 'https://www.googleapis.com/drive/v2/files/' + token);
+
+			xml.send();
+
+			var result = xml.responseText;
+			console.log(result);
    		});
+
   	};
+
+  	$s.postToGoogle=function() {
+
+  		chrome.identity.getAuthToken({interactive: true}, function(token) {
+  			if (chrome.runtime.lastError) {
+	        	console.log("not signed in");
+	        	$s.signedIntoGoogle = false;
+	        	$s.$apply();
+	        	return;
+      		} else {
+      			console.log("yes, signed in already");
+      		}	
+   		});
+  	}
 
   	$s.logoutGoogle=function() {
   		chrome.identity.getAuthToken({interactive: true}, function(token) {

@@ -1,6 +1,7 @@
 
 function Redirect(o) {
 	this._init(o);
+	console.log("hi...");
 }
 
 //temp, allow addon sdk to require this.

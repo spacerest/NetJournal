@@ -1,33 +1,3 @@
-//Nothing really here except the app object. Filters, and directives are
-//include with the controllers that use them. If we need to add any that
-//are used by multiple controllers then we'll define them here.
-var redirectorApp = angular.module('redirectorApp', []);
-
-//To make the private stuff in Firefox work properly
-window.addEventListener('DOMContentLoaded', function() {
-	document.body.classList.remove('private');
-});
-
-
-var gDriveApp = angular.module('gDriveApp', []);
-
-gDriveApp.factory('gdocs', function() {
-  var gdocs = new GDocs();
-
-  var dnd = new DnDFileController('body', function(files) {
-    var $scope = angular.element(this).scope();
-    Util.toArray(files).forEach(function(file, i) {
-      gdocs.upload(file, function() {
-        $scope.fetchDocs(true);
-      }, true);
-    });
-  });
-
-  return gdocs;
-});
-//gDriveApp.service('gdocs', GDocs);
-//gDriveApp.controller('DocsController', ['$scope', '$http', DocsController]);
-
 // Main Angular controller for app.
 function DocsController($scope, $http, gdocs) {
   $scope.docs = [];
@@ -137,8 +107,3 @@ function DocsController($scope, $http, gdocs) {
 
   $scope.toggleAuth(false);
 }
-
-
-
-
-

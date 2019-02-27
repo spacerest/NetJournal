@@ -12,12 +12,63 @@
 		<script src="js/app.js"></script>
 		<script src="js/oauth.js"></script>
 		<script src="js/storage_settings.js"></script>
+		  <meta charset="UTF-8">
+  		<title id="title"></title>
+  		<link rel="stylesheet" href="css/optionsstyle.css">
 
 		<script src="js/controllers/redirectorpage.js"></script>
 	</head>
-	<body ng-app="redirectorApp" ng-controller="StorageCtrl" class="private">
 
-		
+
+<body ng-app="redirectorApp" ng-controller="StorageCtrl" class="private">
+
+  
+  <div id="content">
+    <div>
+      <div class="option-row">
+        <div id="account" class="option-group"></div>
+        <div class="option-values">
+          <div id="user-id" class="value"></div>
+        </div>
+      </div>
+      <div class="option-row">
+        <div id="save-folder-text" class="option-group"></div>
+        <div class="option-values">
+          <div id="save-folder" class="value"></div>
+          <button id="change-folder" class="option-values"></button>
+        </div>
+      </div>
+      <div class="option-row">
+        <div id="save-folder-text" class="option-group"></div>
+        <div class="option-values">
+          <div id="post-to-drive-container" class="value"></div>
+          <button id="post-to-drive" class="option-values">post to drive</button>
+        </div>
+      </div>
+      <div class="option-row">
+        <div id="misc-text" class="option-group"></div>
+        <div class="option-values">
+          <input id="convert" type="checkbox"><label for="convert" id="convert-to-docs" class="radio-text"></label>
+          <br>
+          <br>
+          <button id="send-feedback"></button>
+          <br>
+          <button id="help"></button>
+        </div>
+      </div>
+      <div id="internal" class="option-row gdocs-hidden">
+        <div id="debug-text" class="option-group"></div>
+        <div class="option-values">
+          <button id="feedback-internal"></button>
+          <br>
+          <button id="bug-internal"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/closuresetup.js"></script>
+  <script src="js/options_all.js"></script>	
 
 		<div id="blur-wrapper" ng-class="{blur: showEditForm || showDeleteForm}">
 
@@ -39,6 +90,14 @@
 					<button ng-click="toggleGoogleAuth()" class="btn green large" id="google-auth">{{signedIntoGoogle ? 'Sign Out of Google Account' : 'Sign Into Google Account'}}</button>
 				</div>
 
+				<div> 
+					<button class="btn green large" id="google-auth post-to-drive">Post to Google</button>
+				</div>
+
+				<div> 
+					<button id="change-folder" class="btn green large" id="google-auth">Change Directory</button>
+				</div>
+
 			</br>
 			</br>
 
@@ -55,3 +114,11 @@
 			</footer>
 	</body>
 </html>
+
+<!DOCTYPE html>
+
+</html>
+
+
+
+
