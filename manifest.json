@@ -19,10 +19,10 @@
               "128": "images/icon-active-128.png" },
 
   "permissions" : ["identity", "webRequest", "webRequestBlocking", "storage", "tabs", "http://*/*", "https://*/*", "notifications", "unlimitedStorage",
-    "contextMenus", "notifications", "pageCapture", "\u003Call_urls>", "file://*/*", "contextMenus", "identity", "notifications", "pageCapture", "storage", "tabs", "webRequest"],
+    "contextMenus", "notifications", "\u003Call_urls>", "file://*/*"],
 
  "background": {
-    "scripts": ["js/closuresetup.js", "js/background_all.js", "js/redirect.js", "js/background.js"],
+    "scripts": ["js/background_all.js", "js/redirect.js", "js/background.js"],
     "persistent": true
   },
 

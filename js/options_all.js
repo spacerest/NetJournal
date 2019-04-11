@@ -31,7 +31,6 @@ goog.provide = function(a) {
 goog.setTestOnly = function(a) {
     if (COMPILED && !goog.DEBUG) throw a = a || "", Error("Importing test-only code into non-debug environment" + (a ? ": " + a : "."));
 };
-goog.forwardDeclare = function(a) {};
 COMPILED || (goog.isProvided_ = function(a) {
     return !goog.implicitNamespaces_[a] && goog.isDefAndNotNull(goog.getObjectByName(a))
 }, goog.implicitNamespaces_ = {});
@@ -10733,6 +10732,9 @@ gdocs.OptionsPage = function(a) {
     this.userIdEl_ = gdocs.domUtil.getHtmlElementByIdAssert("user-id");
     this.folderNameEl_ = gdocs.domUtil.getHtmlElementByIdAssert("save-folder");
     this.postToGoogleDrive_ = gdocs.domUtil.getHtmlElementByIdAssert("post-to-drive");
+    this.journalEntryTextArea_ = gdocs.domUtil.getHtmlElementByIdAssert("journal-textarea");
+    this.blockDescription_ = gdocs.domUtil.getHtmlElementByIdAssert("block-description");
+    this.blockUrl_ = gdocs.domUtil.getHtmlElementByIdAssert("block-url");
 
     this.shownGoogleInternal_ = !1;
     gdocs.domUtil.setTextContentId("title", chrome.i18n.getMessage("OPTIONS_TITLE"));
@@ -10758,7 +10760,8 @@ gdocs.OptionsPage.prototype.populate = function() {
     this.changeFolderEl_.addEventListener("click", goog.bind(this.displayPicker_, this), !1);
     //console.log(gdocs);
     //console.log(this.bg_.browserAction_.browserActionHandler_);
-    this.postToGoogleDrive_.addEventListener("click", goog.bind(this.bg_.browserAction_.browserActionHandler_, this.bg_.browserAction_), !1);
+
+    this.postToGoogleDrive_.addEventListener("click", goog.bind(this.getJournalEntryInfo_, this), !1);
     
     //this.postToGoogleDrive_.onClicked.addListener(goog.bind(this.bg_.browserAction_.browserActionHandler_, this));
     console.log("THESE ARE THE THINGS BEING BOUND IN OPTIONS ALL");
@@ -10775,8 +10778,25 @@ gdocs.OptionsPage.prototype.populate = function() {
         goog.bind(this.handleConvert_, this), !1);
     this.attachUrlActionMsg_("send-feedback", "SEND_FEEDBACK");
     this.attachUrlActionMsg_("help", "HELP");
-    this.checkGoogle_()
+    this.checkGoogle_();
 };
+
+gdocs.OptionsPage.prototype.getJournalEntryInfo_ = function() {
+    this.journalEntryInfo_ = {
+        "journal_entry": this.journalEntryTextArea_.value,
+        "description": this.blockDescription_.innerHTML,
+        "url": this.blockUrl_.innerHTML,
+        "time":  goog.now()
+        }
+    this.bg_.browserAction_.browserActionHandler_(this);
+    window.location.href=getBeforeLocation();
+
+};
+
+gdocs.OptionsPage.prototype.sendJournalEntry_ = function(a) {
+
+};
+
 gdocs.OptionsPage.prototype.populateUserId_ = function(a) {
     a ? this.setUserId_(null, a) : this.clearUserId_()
 };

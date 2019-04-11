@@ -1,13 +1,13 @@
-document.getElementById('submitBtn').addEventListener("click", function() {
-    console.log("hiii submit butn pressed from blocked-journal.js");
+//document.getElementById('submitBtn').addEventListener("click", function() {
+//    console.log("hiii submit butn pressed from blocked-journal.js");
 
     //save the text the user added
-    download("hello", "filename.txt", 'text/plain');
+//    download("hello", "filename.txt", 'text/plain');
 
-    //continue to original destination
-    //https://github.com/tetsuwo/website-blocker-chrome.ext
-    window.location.href=getBeforeLocation();
-})
+//    //continue to original destination
+//    //https://github.com/tetsuwo/website-blocker-chrome.ext
+//    window.location.href=getBeforeLocation();
+//})
 
 document.getElementById('skipBtn').addEventListener("click", function() {
     console.log("hiii skip butn pressed from blocked-journal.js");

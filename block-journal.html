@@ -4,9 +4,10 @@
 		<title>Block Journal</title>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="css/redirector.css" />
+		<link rel="stylesheet" href="css/optionsstyle.css">
+
 		<!-- ☈ -->
 		<link rel="shortcut icon" href="images/icon-active-32.png">
-
 
 		<script src="js/angular.min.js"></script>
 		<script src="js/redirect.js"></script>
@@ -19,6 +20,55 @@
 		<script src="js/controllers/blockJournalInfo.js"></script>
 	</head>
 	<body ng-app="redirectorApp" ng-controller="RedirectorPageCtrl" class="private">
+
+  <div id="content">
+    <div>
+      <div class="option-row">
+        <div id="account" class="option-group"></div>
+        <div class="option-values">
+          <div id="user-id" class="value"></div>
+        </div>
+      </div>
+      <div class="option-row">
+        <div id="save-folder-text" class="option-group"></div>
+        <div class="option-values">
+          <div id="save-folder" class="value"></div>
+          <button id="change-folder" class="option-values"></button>
+        </div>
+      </div>
+      <div class="option-row">
+        <div id="save-folder-text" class="option-group"></div>
+        <div class="option-values">
+          <div id="post-to-drive-container" class="value"></div>
+          <!--button id="post-to-drive" class="option-values">post to drive</button-->
+        </div>
+      </div>
+      <div class="option-row">
+        <div id="misc-text" class="option-group"></div>
+        <div class="option-values">
+          <input id="convert" type="checkbox"><label for="convert" id="convert-to-docs" class="radio-text"></label>
+          <br>
+          <br>
+          <button id="send-feedback"></button>
+          <br>
+          <button id="help"></button>
+        </div>
+      </div>
+      <div id="internal" class="option-row gdocs-hidden">
+        <div id="debug-text" class="option-group"></div>
+        <div class="option-values">
+          <button id="feedback-internal"></button>
+          <br>
+          <button id="bug-internal"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/options_all.js"></script>	
+
+
+
 		<div id="cover" ng-show="showEditForm || showDeleteForm">
 			<div id="private-mode-message" ng-show="false">
 				Block Journal does not work in Private Mode
@@ -159,17 +209,17 @@
 
 
             <div>
-                <textarea placeholder="What are you thinking about?"></textarea>
+                <textarea id="journal-textarea" placeholder="What are you thinking about?"></textarea>
 			<div class="menu">
                 <p class="btn grey large float-right" id="skipBtn" href"cancel.html">Skip</p>
-				<p class="btn green large float-right" id="submitBtn">Submit</a>
+				<p class="btn green large float-right" id="post-to-drive">Submit</a>
 			</div>
 
 
             <div class="block-info" ng-controller="BlockJournalInfo">
                 <p>url: {{ blockedSite }}</p>
-                <p>description: {{ blockedSiteDescription }}</p>
-                <p>url pattern: {{ blockedSitePattern }}</p>
+                <p>description: <span id="block-description">{{ blockedSiteDescription }}</span></p>
+                <p>url pattern: <span id="block-url">{{ blockedSitePattern }}</span></p>
 
 
             </div>

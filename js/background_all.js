@@ -31,7 +31,6 @@ goog.provide = function(a) {
 goog.setTestOnly = function(a) {
     if (COMPILED && !goog.DEBUG) throw a = a || "", Error("Importing test-only code into non-debug environment" + (a ? ": " + a : "."));
 };
-goog.forwardDeclare = function(a) {};
 COMPILED || (goog.isProvided_ = function(a) {
     return !goog.implicitNamespaces_[a] && goog.isDefAndNotNull(goog.getObjectByName(a))
 }, goog.implicitNamespaces_ = {});
@@ -671,7 +670,7 @@ gdocs.DriveDataController.prototype.createDataUriBlob = function(a, b) {
     return this.createBlob(decodeURI(a))
 };
 gdocs.DriveDataController.prototype.createBlob = function(a) {
-    return new Blob(["Hello world"], {"type": "text/plain"});
+    return new Blob([gdocs.journalEntryInfo_["journal_entry"]], {"type": "text/plain"});
 };
 gdocs.DriveDataController.prototype.getDownloadResults = function() {
     return this.downloadResults_
@@ -779,17 +778,7 @@ goog.math.Size.prototype.scaleToFit = function(a) {
 };
 gdocs.global = {};
 gdocs.Impression = {
-    OTHER: 0,
-    LINK: 2,
-    IMAGE: 3,
-    AUDIO: 4,
-    VIDEO: 5,
-    PAGE_ACTION_URL: 6,
-    PAGE_ACTION_DOC: 7,
-    PAGE_ACTION_HTML: 8,
-    PAGE_ACTION_CAPTURE_IMAGE_VISIBLE: 9,
-    PAGE_ACTION_CAPTURE_MHTML: 10,
-    PAGE_ACTION_CAPTURE_IMAGE_ENTIRE: 15
+    PAGE_ACTION_PLAIN: 8,
 };
 gdocs.HttpStatus = {
     OK: 200,
@@ -802,30 +791,11 @@ gdocs.global.MAX_GENERATED_TITLE_LEN = 50;
 gdocs.global.MAX_SUFFIX_LEN = 8;
 gdocs.global.SAVE_DIALOG_SIZE = new goog.math.Size(417, 170);
 gdocs.MimeType = {
-    ATOM: "application/atom+xml",
-    HTML: "text/plain", //SADIE changed this from text/html
-    MHTML: "text/mhtml",
-    JSON: "application/json",
-    OCTET_STREAM: "application/octet-stream",
     PLAIN: "text/plain",
-    PDF: "application/pdf",
-    PNG: "image/png",
-    X_PDF: "application/x-pdf",
-    XML: "text/xml"
 };
 gdocs.ActionId = {
-    BUG_INTERNAL: "bug-internal",
-    CHANGE_FOLDER: "change-folder",
-    FEEDBACK_INTERNAL: "feedback-internal",
-    HELP: "help",
-    HTML: "txt", //SADIE changed this from html
+    PLAIN: "txt", //SADIE changed this from html
     HTML_DOC: "htmldoc",
-    IMAGE_ENTIRE: "image-entire",
-    IMAGE_VISIBLE: "image-visible",
-    MHTML: "mhtml",
-    OPTIONS: "options",
-    SEND_FEEDBACK: "send-feedback",
-    URL: "url"
 };
 gdocs.msgutil = {};
 gdocs.msgutil.createXhrErrMsg = function(a) {
@@ -840,52 +810,10 @@ gdocs.msgutil.createBaseFilenameFromContentType = function(a) {
 };
 gdocs.data = {};
 gdocs.data.EXTENSIONS = {
-    "application/msword": "doc",
-    "application/pdf": "pdf",
-    "application/rtf": "rtf",
-    "application/vnd.ms-excel": "xls",
-    "application/vnd.ms-powerpoint": "ppt",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
-    "application/x-chrome-extension": "crx",
-    "application/x-gzip": "gzip",
-    "application/x-pdf": "pdf",
-    "application/zip": "zip",
-    "audio/mp4": "mp4",
-    "audio/mpeg": "mp3",
-    "audio/ogg": "ogg",
-    "audio/vnd.wave": "wav",
-    "image/gif": "gif",
-    "image/jpeg": "jpg",
-    "image/pjpeg": "jpg",
-    "image/png": "png",
-    "image/svg+xml": "svg",
-    "image/tiff": "tif",
-    "image/vnd.microsoft.icon": "ico",
-    "text/css": "css",
-    "text/csv": "csv",
-    "text/html": "html",
-    "text/mhtml": "mht",
     "text/plain": "txt",
-    "text/tsv": "tsv",
-    "text/xml": "xml",
-    "video/mp4": "mp4",
-    "video/mpeg": "mpg",
-    "video/ogg": "ogg"
 };
 gdocs.data.CONVERTIBLE = {
-    "application/msword": !0,
-    "application/rtf": !0,
-    "application/vnd.ms-excel": !0,
-    "application/vnd.ms-powerpoint": !0,
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation": !0,
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": !0,
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": !0,
-    "text/csv": !0,
-    "text/html": !0,
     "text/plain": !0,
-    "text/tsv": !0
 };
 gdocs.TitleComputer = function(a, b, c) {
     if (0 >= a) throw Error("Maximum title length must be > 0");
@@ -942,12 +870,17 @@ gdocs.TitleComputer.prototype.unescapeHtml_ = function(a) {
     return a.nodeValue
 };
 gdocs.TitleComputer.prototype.createDefaultTitle = function(a, b, c, d, e) {
-    return 0 == c.indexOf(gdocs.MimeType.HTML) ? (e = this.createFromHtml(e)) ? e : d ? this.createNoData_(a, c, b) : null : this.createNoData_(a, c, b)
+    return 0 == c.indexOf(gdocs.MimeType.PLAIN) ? (e = this.createFromHtml(e)) ? e : d ? this.createNoData_(a, c, b) : null : this.createNoData_(a, c, b)
 };
 gdocs.TitleComputer.prototype.createFromHtml = function(a) {
     a = "<title>Test title hardcoded into gdocs.TitleComputer.prototype.createFromHtml in background_all</title>"
     a = a.match(gdocs.TitleComputer.TITLE_CONTENTS_);
-    return !a || 2 > a.length ? null : this.createTitleFromText(a[1], gdocs.MimeType.HTML)
+    gdocs.journalEntryInfo_["description"];
+    gdocs.journalEntryInfo_["time"];
+    gdocs.journalEntryInfo_["url"];
+    return gdocs.journalEntryInfo_["description"] + "-" + gdocs.journalEntryInfo_["time"] + ".txt";
+
+    //return !a || 2 > a.length ? null : this.createTitleFromText(a[1], gdocs.MimeType.PLAIN)
 };
 gdocs.TitleComputer.prototype.createNoData_ = function(a, b, c) {
     var d = a.lastIndexOf("/");
@@ -956,7 +889,7 @@ gdocs.TitleComputer.prototype.createNoData_ = function(a, b, c) {
     return 0 <= a.indexOf("?") || 0 == a.indexOf("&") ? (c = this.createNoUrlDefaultTitle_(b, c), this.appendContentTypeExtension_(c, b)) : this.createTitleFromText(decodeURI(a), b)
 };
 gdocs.TitleComputer.prototype.createNoUrlDefaultTitle_ = function(a, b) {
-    return 0 == a.indexOf(gdocs.MimeType.PDF) ? chrome.i18n.getMessage("PDF_DEFAULT_FILENAME") : 0 == a.indexOf(gdocs.MimeType.HTML) ? chrome.i18n.getMessage("HTML_DEFAULT_FILENAME") : 0 == a.indexOf(gdocs.MimeType.XML) ? chrome.i18n.getMessage("XML_DEFAULT_FILENAME") : 0 == a.indexOf("text") ? chrome.i18n.getMessage("TEXT_DEFAULT_FILENAME") : 0 == a.indexOf("video") ? chrome.i18n.getMessage("VIDEO_DEFAULT_FILENAME") : 0 == a.indexOf("audio") ? chrome.i18n.getMessage("AUDIO_DEFAULT_FILENAME") :
+    return 0 == a.indexOf(gdocs.MimeType.PDF) ? chrome.i18n.getMessage("PDF_DEFAULT_FILENAME") : 0 == a.indexOf(gdocs.MimeType.PLAIN) ? chrome.i18n.getMessage("HTML_DEFAULT_FILENAME") : 0 == a.indexOf(gdocs.MimeType.XML) ? chrome.i18n.getMessage("XML_DEFAULT_FILENAME") : 0 == a.indexOf("text") ? chrome.i18n.getMessage("TEXT_DEFAULT_FILENAME") : 0 == a.indexOf("video") ? chrome.i18n.getMessage("VIDEO_DEFAULT_FILENAME") : 0 == a.indexOf("audio") ? chrome.i18n.getMessage("AUDIO_DEFAULT_FILENAME") :
         0 == a.indexOf("image") ? chrome.i18n.getMessage("IMAGE_DEFAULT_FILENAME") : b
 };
 gdocs.DataUriCapturer = function(a, b, c, d, e) {
@@ -1056,7 +989,6 @@ gdocs.UrlDownloader.prototype.beginDownload_ = function(a) {
     this.addRangeHeader_(a);
     a.responseType = "arraybuffer";
     try {
-        console.log("this is where the xml is sent? has been resulting in 'file not found'");
         a.send()
     } catch (b) {
         this.fatal(chrome.i18n.getMessage("START_DOWNLOAD_EXCEPTION", b.toString()))
@@ -1125,7 +1057,7 @@ gdocs.UrlDownloader.prototype.createTitle_ = function(a) {
         d = this.getContentDisposition_(a);
     if (d) return c.createTitleFromText(d, b);
     d = "";
-    if (a.response && 0 == b.indexOf(gdocs.MimeType.HTML))
+    if (a.response && 0 == b.indexOf(gdocs.MimeType.PLAIN))
         for (var e = new Uint8Array(a.response), g = Math.min(e.length, gdocs.UrlDownloader.MAX_TITLE_SEARCH_BYTES_), f = 0; f < g; f++) {
             var h = String.fromCharCode(e[f]),
                 d = d + h;
@@ -1162,7 +1094,6 @@ gdocs.DownloadStarter.startUrlDownload = function(a, b, c, d, e, g, f) {
 };
 gdocs.HtmlScrapeCapturer = function(a, b, c) {
     gdocs.Capturer.call(this, a, b, gdocs.HtmlScrapeCapturer.createDefaultFilename_(b, c), !c);
-    this.contentScript_ = c ? "js/contentscriptraw.js" : "js/contentscriptexpand.js";
     this.callback_ = null;
     this.toRawHtml_ = c
 };
@@ -1176,166 +1107,15 @@ gdocs.HtmlScrapeCapturer.createDefaultFilename_ = function(a, b) {
 gdocs.HtmlScrapeCapturer.prototype.startCapture = function() {
     this.callback_ = goog.bind(this.onMessageCallback_, this);
     this.callback_();
-    //chrome.extension.onMessage.addListener(this.callback_);
-    //chrome.tabs.executeScript(this.getTab().id, {
-    //    file: this.contentScript_
-    //})
 };
 gdocs.HtmlScrapeCapturer.prototype.onMessageCallback_ = function(a, b, c) {
     //chrome.extension.onMessage.removeListener(this.callback_);
     //gdlog.info("HtmlScrapeCapturer.onHtmlCallback_", "html length:" + a.length);
     (b = (new gdocs.TitleComputer(gdocs.global.MAX_GENERATED_TITLE_LEN, gdocs.global.MAX_SUFFIX_LEN, !this.getAllowConvert())).createFromHtml(a)) && this.setFilename(b);
     a = this.createBlob(a);
-    this.uploadBlob(a, gdocs.MimeType.HTML)
+    this.uploadBlob(a, gdocs.MimeType.PLAIN)
 };
-gdocs.ImageCapturer = function(a, b) {
-    gdocs.Capturer.call(this, a, b, gdocs.Capturer.createFilenameFromTab(b, ".txt"), !1);
-    this.bg_ = a;
-    this.hasDisplayedDialog_ = !1
-};
-goog.inherits(gdocs.ImageCapturer, gdocs.Capturer);
-gdocs.ImageCapturer.prototype.startCapture = function() {
-    chrome.tabs.captureVisibleTab(chrome.windows.WINDOW_ID_CURRENT, {
-        format: "png"
-    }, goog.bind(this.uploadImageUri, this))
-};
-gdocs.ImageCapturer.prototype.uploadImageUri = function(a) {
-    this.displayDialog();
-    if (a) {
-        var b = a.indexOf(",");
-        a = a.substr(b + 1);
-        a = this.createDataUriBlob(a, !0);
-        b = new gdocs.TitleComputer(gdocs.global.MAX_GENERATED_TITLE_LEN, gdocs.global.MAX_SUFFIX_LEN, !0);
-        this.setFilename(b.createTitleFromText(this.getFilename(), gdocs.MimeType.PNG));
-        this.uploadBlob(a, gdocs.MimeType.PNG)
-    } else this.fatal(chrome.i18n.getMessage("IMAGE_CAPTURE_FAILED"))
-};
-gdocs.ImageCapturer.prototype.displayDialog = function() {
-    this.hasDisplayedDialog_ || (this.bg_.displayWhenAuthorized(), this.hasDisplayedDialog_ = !0)
-};
-gdocs.ImageEntireCapturer = function(a, b, c) {
-    gdocs.ImageCapturer.call(this, a, c);
-    this.animatedBrowserIcon_ = b;
-    this.canvas_ = document.createElement("canvas");
-    this.context_ = this.canvas_.getContext("2d");
-    this.ratio_ = window.devicePixelRatio;
-    this.columnNum_ = this.rowNum_ = this.visibleHeight_ = this.visibleWidth_ = 0
-};
-goog.inherits(gdocs.ImageEntireCapturer, gdocs.ImageCapturer);
-gdocs.ImageEntireCapturer.EMPTY_URI_LENGTH_ = 6;
-gdocs.ImageEntireCapturer.prototype.startCapture = function() {
-    chrome.tabs.executeScript(this.getTab().id, {
-        file: "js/contentscriptscroll.js"
-    }, goog.bind(this.initiateEntireCapture_, this));
-    this.animatedBrowserIcon_.start()
-};
-gdocs.ImageEntireCapturer.prototype.initiateEntireCapture_ = function() {
-    this.sendMessage_({
-        msg: "init"
-    }, goog.bind(this.processResponse_, this))
-};
-gdocs.ImageEntireCapturer.prototype.processResponse_ = function(a) {
-    if (a) switch (gdlog.fine("ImageEntireCapturer.processResponse", "processResponse_:" + gdlog.prettyPrint(a)), a.msg) {
-        case "initialized":
-            this.canvas_.width = a.bodyScrollWidth;
-            this.canvas_.height = a.bodyScrollHeight;
-            if (this.canvas_.toDataURL("image/png").length <= gdocs.ImageEntireCapturer.EMPTY_URI_LENGTH_) {
-                this.fatalCapture_(chrome.i18n.getMessage("PAGE_SIZE_NOT_SUPPORTED", this.canvas_.width + "x" + this.canvas_.height));
-                break
-            }
-            this.visibleWidth_ = a.visibleWidth;
-            this.visibleHeight_ = a.visibleHeight;
-            this.columnNum_ = this.rowNum_ = 0;
-            this.startStitch_();
-            break;
-        case "scrollToDone":
-            this.startStitch_();
-            break;
-        case "endOfPage":
-            a = this.canvas_.toDataURL("image/png"), this.animatedBrowserIcon_.stop(), this.uploadImageUri(a)
-    } else gdlog.warn("ImageEntireCapturer.processResponse", "No response. lastError:" + gdlog.prettyPrint(chrome.extension.lastError)), this.fatalLastError_()
-};
-gdocs.ImageEntireCapturer.prototype.startStitch_ = function() {
-    chrome.tabs.update(this.getTab().id, {
-        active: !0
-    }, goog.bind(this.captureVisibleAndContinue_, this))
-};
-gdocs.ImageEntireCapturer.prototype.captureVisibleAndContinue_ = function() {
-    chrome.tabs.captureVisibleTab(chrome.windows.WINDOW_ID_CURRENT, {
-        format: "png"
-    }, goog.bind(this.stitchImageAndContinue_, this))
-};
-gdocs.ImageEntireCapturer.prototype.stitchImageAndContinue_ = function(a) {
-    if (a) {
-        var b = new Image;
-        b.onload = goog.bind(this.handleImageOnLoad_, this);
-        b.src = a
-    } else gdlog.warn("ImageEntireCapturer.stitchImage", "Capture failure dataUrl:" + a + " lastError:" + gdlog.prettyPrint(chrome.extension.lastError)), this.fatalLastError_()
-};
-gdocs.ImageEntireCapturer.prototype.handleImageOnLoad_ = function(a) {
-    if (a) {
-        var b = 0,
-            c = 0,
-            d = 0,
-            e = 0,
-            g = 0,
-            f = 0;
-        (this.columnNum_ + 1) * this.visibleWidth_ > this.canvas_.width ? (b = this.canvas_.width % this.visibleWidth_, d = (this.columnNum_ + 1) * this.visibleWidth_ - this.canvas_.width) : b = this.visibleWidth_;
-        (this.rowNum_ + 1) * this.visibleHeight_ > this.canvas_.height ? (c = this.canvas_.height % this.visibleHeight_, e = (this.rowNum_ + 1) * this.visibleHeight_ < this.canvas_.height ? 0 : (this.rowNum_ + 1) * this.visibleHeight_ - this.canvas_.height) :
-            c = this.visibleHeight_;
-        g = this.columnNum_ * this.visibleWidth_;
-        f = this.rowNum_ * this.visibleHeight_;
-        this.drawPixelsToDips_(a.target, d, e, g, f, b, c);
-        this.columnNum_++;
-        if (this.columnNum_ * this.visibleWidth_ >= this.canvas_.width && (this.rowNum_++, this.columnNum_ = 0, this.rowNum_ * this.visibleHeight_ >= this.canvas_.height)) {
-            this.sendMessage_({
-                msg: "restore"
-            }, goog.bind(this.processResponse_, this));
-            return
-        }
-        this.sendMessage_({
-                msg: "scrollTo",
-                x: this.columnNum_ * this.visibleWidth_,
-                y: this.rowNum_ * this.visibleHeight_,
-                capturePosition: this.getCornerPosition_()
-            },
-            goog.bind(this.processResponse_, this))
-    } else gdlog.error("ImageEntireCapturer.handleImageOnLoad", "No image data")
-};
-gdocs.ImageEntireCapturer.prototype.drawPixelsToDips_ = function(a, b, c, d, e, g, f) {
-    if (0 == this.rowNum_ && 0 == this.columnNum_) {
-        1 == this.ratio_ || this.visibleWidth_ != a.width && this.visibleHeight_ != a.height || (this.ratio_ = 1);
-        var h = 1 / this.ratio_;
-        this.context_.scale(h, h)
-    }
-    var h = b * this.ratio_,
-        n = c * this.ratio_,
-        m = d * this.ratio_,
-        p = e * this.ratio_,
-        k = g * this.ratio_,
-        l = f * this.ratio_;
-    this.context_.drawImage(a, h, n, k, l, m, p, k, l);
-    gdlog.info("ImageEntireCapturer.drawPixelsToDips", "row:" + this.rowNum_ + " column:" + this.columnNum_ + " visibleWidthxHeight:" +
-        this.visibleWidth_ + "x" + this.visibleHeight_ + " devicePixelRatio:" + window.devicePixelRatio + " ratio:" + this.ratio_ + " imageWidthxHeight:" + a.width + "x" + a.height + " imageSize:" + a.src.length + " srcXxY:" + b + "x" + c + " dstXxY:" + d + "x" + e + " widthxheight:" + g + "x" + f + " pixelSrcXxY:" + h + "x" + n + " pixelDstXxY:" + m + "x" + p + " pixelWidthxHeight:" + k + "x" + l)
-};
-gdocs.ImageEntireCapturer.prototype.getCornerPosition_ = function() {
-    var a = (this.columnNum_ + 1) * this.visibleWidth_ >= this.canvas_.width,
-        b = (this.rowNum_ + 1) * this.visibleHeight_ >= this.canvas_.height;
-    return 0 == this.rowNum_ && a ? "top_right" : 0 == this.columnNum_ && b ? "bottom_left" : a && b ? "bottom_right" : ""
-};
-gdocs.ImageEntireCapturer.prototype.sendMessage_ = function(a, b) {
-    gdlog.fine("ImageEntireCapturer.sendMessage", gdlog.prettyPrint(a));
-    chrome.tabs.sendMessage(this.getTab().id, a, b);
-    chrome.extension.lastError && (gdlog.warn("ImageEntireCapturer.sendMessage", "chrome.tabs.sendMessage() failed. id:" + this.getTab().id + " lastError:" + gdlog.prettyPrint(chrome.extension.lastError) + "\nFailed sending message:\n" + gdlog.prettyPrint(a)), this.fatalLastError_())
-};
-gdocs.ImageEntireCapturer.prototype.fatalCapture_ = function(a) {
-    this.animatedBrowserIcon_.stop();
-    this.fatal(a);
-    this.displayDialog()
-};
-gdocs.ImageEntireCapturer.prototype.fatalLastError_ = function() {
-    chrome.extension.lastError && chrome.extension.lastError.message ? this.fatalCapture_(chrome.i18n.getMessage("IMAGE_CAPTURE_FAILED_REASON", chrome.extension.lastError.message)) : this.fatalCapture_(chrome.i18n.getMessage("IMAGE_CAPTURE_FAILED"))
-};
+
 gdocs.Notify = function(a, b, c) {
     this.title_ = b || chrome.i18n.getMessage("CHROME_EXTENSION_NAME");
     this.iconUrl_ = c || "images/driveicon128.png";
@@ -1349,33 +1129,7 @@ gdocs.Notify.prototype.show = function() {
         iconUrl: this.iconUrl_
     }, function(a) {}) : goog.global.webkitNotifications && goog.global.webkitNotifications.createNotification ? goog.global.webkitNotifications.createNotification(this.iconUrl_, this.title_, this.body_).show() : goog.global.console.log("Could not display notify message:" + this.body_)
 };
-gdocs.PageCapturer = function(a, b) {
-    gdocs.Capturer.call(this, a, b, chrome.i18n.getMessage("MHTML_DEFAULT_FILENAME"), !1)
-};
-goog.inherits(gdocs.PageCapturer, gdocs.Capturer);
-gdocs.PageCapturer.SUBJECT_ = /Subject:\s*(.*)/;
-gdocs.PageCapturer.prototype.startCapture = function() {
-    chrome.pageCapture.saveAsMHTML({
-        tabId: this.getTab().id
-    }, goog.bind(this.pageCapturedAsMhtml_, this))
-};
-gdocs.PageCapturer.prototype.pageCapturedAsMhtml_ = function(a) {
-    if (chrome.extension.lastError) this.fatal(chrome.i18n.getMessage("FAILURE_PAGE_CAPTURE", String(chrome.extension.lastError)));
-    else if (a) {
-        var b = new FileReader;
-        b.onloadend = goog.bind(this.onLoadEnd_, this, a);
-        b.readAsText(a, "utf-16")
-    } else this.fatal(chrome.i18n.getMessage("EMPTY_PAGE_CAPTURE"))
-};
-gdocs.PageCapturer.prototype.onLoadEnd_ = function(a, b) {
-    if (b.target.readyState == FileReader.DONE) {
-        var c = this.getTab() ? this.getTab().title : this.getFilename(),
-            d = b.target.result.match(gdocs.PageCapturer.SUBJECT_);
-        d && 1 < d.length && d[1] && (c = d[1]);
-        (c = (new gdocs.TitleComputer(gdocs.global.MAX_GENERATED_TITLE_LEN, gdocs.global.MAX_SUFFIX_LEN, !this.getAllowConvert())).createTitleFromText(c, gdocs.MimeType.MHTML)) && this.setFilename(c);
-        this.uploadBlob(a, gdocs.MimeType.MHTML)
-    }
-};
+
 gdocs.BrowserAction = function(a) {
     this.bg_ = a;
     a = 1 < goog.global.devicePixelRatio ? 38 : 19;
@@ -1386,7 +1140,6 @@ gdocs.BrowserAction.prototype.initialize = function() {
         title: chrome.i18n.getMessage("SAVE_TO_GOOGLE_DRIVE_ACTION")
     });
     chrome.browserAction.onClicked.addListener(goog.bind(this.browserActionHandler_, this))
-        console.log("THESE ARE THE THINGS BEING BOUND IN BG ALL");
 
     console.log(this.browserActionHandler_);
     console.log(this);
@@ -1405,25 +1158,7 @@ gdocs.BrowserAction.prototype.processTab_ = function(a, b) {
             d = a == gdocs.ActionId.HTML;
             var e = new gdocs.HtmlScrapeCapturer(this.bg_, b, d);
             e.startCapture();
-            d = new gdocs.CaptureUploadParams(e, d ? gdocs.Impression.PAGE_ACTION_HTML : gdocs.Impression.PAGE_ACTION_DOC);
-            break;
-        case gdocs.ActionId.IMAGE_ENTIRE:
-            d = new gdocs.ImageEntireCapturer(this.bg_, this.animatedBrowserIcon_, b);
-            d.startCapture();
-            c = !0;
-            d = new gdocs.CaptureUploadParams(d, gdocs.Impression.PAGE_ACTION_CAPTURE_IMAGE_ENTIRE);
-            break;
-        case gdocs.ActionId.IMAGE_VISIBLE:
-            d = new gdocs.ImageCapturer(this.bg_, b);
-            d.startCapture();
-            c = !0;
-            d = new gdocs.CaptureUploadParams(d, gdocs.Impression.PAGE_ACTION_CAPTURE_IMAGE_VISIBLE);
-            break;
-        case gdocs.ActionId.MHTML:
-            d = new gdocs.PageCapturer(this.bg_, b);
-            d.startCapture();
-            d = new gdocs.CaptureUploadParams(d,
-                gdocs.Impression.PAGE_ACTION_CAPTURE_MHTML);
+            d = new gdocs.CaptureUploadParams(e, d ? gdocs.Impression.PAGE_ACTION_PLAIN : gdocs.Impression.PAGE_ACTION_DOC);
             break;
         default:
             gdlog.warn("BrowserAction.processTabAction", 'Unsupported feature: "' + a + '"');
@@ -1432,6 +1167,8 @@ gdocs.BrowserAction.prototype.processTab_ = function(a, b) {
     c ? this.bg_.setUploadParams(d) : this.bg_.initiateUploadToDrive(d)
 };
 gdocs.BrowserAction.prototype.browserActionHandler_ = function(a) {
+    gdocs.journalEntryInfo_ = a.journalEntryInfo_;
+
     a && (this.bg_.getTabContentType().isChromeInternalUrl(a) ? (new gdocs.Notify(chrome.i18n.getMessage("CANNOT_CAPTURE_CHROME"))).show() : this.processTab_(this.getDefaultActionId_(a), a))
 };
 gdocs.BrowserAction.prototype.getDefaultActionId_ = function(a) {

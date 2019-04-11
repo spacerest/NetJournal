@@ -1,11 +1,3 @@
-
-window.gapi_onload = function(){
-  console.log('gapi loaded.', gapi.auth, gapi.client);
-
-
-  // Do things you want with gapi.auth and gapi.client.
-}
-
 //This is the background script. It is responsible for actually redirecting requests,
 //as well as monitoring changes in the redirects and the disabled status and reacting to them.
 function log(msg) {
@@ -360,14 +352,6 @@ function setUpRedirectListener() {
 //Sets up listener for when the user submits a journal entry and wants to
 //submit and continue to the next page, cancel and go back, or skip and
 //continue
-
-function setUpUserActionListeners() {
-    //find buttons
-    var submitButton = document.getElementById("submitBtn").addEventListener("click", function() {
-        console.log("submit button was clicked 1");
-    })
-
-}
 
 function saveJournalEntryAndContinue() {
     navigateHistory[tabId]
