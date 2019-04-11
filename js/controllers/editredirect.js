@@ -48,7 +48,7 @@ redirectorApp.controller('EditRedirectCtrl', ['$scope', function($s) {
         // BLOCK JOURNAL addition: we didn't ask for a "redirect to" site,
         // because we'll only be (temporarily) redirecting to this extension
         // journaling page
-        $s.redirect.redirectUrl = chrome.extension.getURL('block-journal.html');//"chrome-extension://ckhcnajpjigecmdajajfogmcjkjcbhgp/block-journal.html";
+        $s.redirect.redirectUrl = chrome.extension.getURL('net-journal.html');//"chrome-extension://ckhcnajpjigecmdajajfogmcjkjcbhgp/net-journal.html";
 
 		$s.redirect.updateExampleResult();
 

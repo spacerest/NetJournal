@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Block Journal</title>
+		<title>NetJournal</title>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="css/redirector.css" />
 		<!-- ☈ -->
@@ -19,7 +19,7 @@
 	<body ng-app="redirectorApp" ng-controller="RedirectorPageCtrl" class="private">
 		<div id="cover" ng-show="showEditForm || showDeleteForm">
 			<div id="private-mode-message" ng-show="false">
-				Block Journal does not work in Private Mode
+				NetJournal does not work in Private Mode
 			</div>
 		</div>
 
@@ -116,7 +116,7 @@
 
 		<div id="blur-wrapper" ng-class="{blur: showEditForm || showDeleteForm}">
 
-			<h1>Block Journal</h1>
+			<h1>NetJournal</h1>
             <h5>Check in with yourself</h5>
 
             <div class="menu">
@@ -138,6 +138,7 @@
 					<a class="btn blue large" ng-mousedown="updateExportLink()" ng-href="{{redirectDownload}}" download="Redirector.json">Export</a>
 				</span>
 
+				<a class="btn blue large" href="about.html" target="_blank">About</a>
 				<a class="btn blue large" href="help.html" target="_blank">Help</a>
 			</div>
 
@@ -148,28 +149,20 @@
 			</div>
 
 			<!-- List of existing redirects -->
+
+			<h3>Prompt me to write when I go to these sites:</h3>
 			<div class="redirect-table" ng-show="true" ng-controller="ListRedirectsCtrl">
 				<div class="redirect-row" ng-class="{disabled: r.disabled}" ng-repeat="r in redirects">
 					<h4><span class="disabled-marker" ng-show="r.disabled">[Disabled] </span><span>{{r.description}}</span></h4>
 					<div class="redirect-info">
 						<div>
-							<label>Redirect:</label>
 							<p>{{r.includePattern}}</p>
-						</div>
-						<div>
-							<label>to:</label><p>{{r.redirectUrl}}</p>
 						</div>
 						<div ng-show="r.excludePattern">
 							<label>excluding:</label><p>{{r.excludePattern}}</p>
 						</div>
 						<div ng-if="r.patternDesc">
 							<label>Hint:</label><p>{{r.patternDesc}}</p>
-						</div>
-						<div>
-							<label>Example:</label> <p><span class="error" ng-show="r.error">{{r.error}}</span><span ng-show="r.exampleResult">{{r.exampleUrl}} <span class="arrow">&rarr;</span> {{r.exampleResult}}</span></p>
-						</div>
-						<div>
-							<label>Applies to:</label> <p>{{r.appliesTo|requestTypeDisplay}}</p>
 						</div>
 					</div>
 					<div>
@@ -185,7 +178,7 @@
 			</div>
 
 			<footer>
-                <small>Block Journal is a fork of <a target="_blank" href="http://einaregilsson.com">Einar Egilsson's</a> <a target="_blank" href="http://github.com/einaregilsson/Redirector">Redirector</a></small>
+                <small>NetJournal is a fork of <a target="_blank" href="http://einaregilsson.com">Einar Egilsson's</a> <a target="_blank" href="http://github.com/einaregilsson/Redirector">Redirector</a></small>
 			</footer>
 	</body>
 </html>

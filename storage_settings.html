@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Block Journal</title>
+		<title>NetJournal</title>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="css/redirector.css" />
 		<!-- ☈ -->
@@ -20,8 +20,58 @@
 
 
 <body ng-app="redirectorApp" ng-controller="StorageCtrl" class="private">
+<script src="js/options_all.js"></script>
 
-  
+		<div id="blur-wrapper" ng-class="{blur: showEditForm || showDeleteForm}">
+
+			<h1>NetJournal</h1>
+            <h5>Check in with yourself</h5>
+
+            <div class="menu">
+                <a class="btn blue large" href="about.html" target="_blank">About</a>
+				<a class="btn blue large" href="help.html" target="_blank">Help</a>
+            </div>
+
+			<div class="menu">
+
+				<a class="btn blue large" href="settings.html">What Sites am I Journaling?</a>
+				<a class="btn blue large" href="storage_settings.html" >Where is my Journal Saved?</a>
+
+			</div>
+
+			<div class="centered-body">
+
+                <h2>Google Docs</h2>
+				<label><input type="checkbox" ng-model="googleDocsOption" ng-click="toggleGoogleDocsOption()" />Save to Google Docs</label>
+
+				<div>
+					<button ng-click="toggleGoogleAuth()" class="btn green large" id="google-auth">{{signedIntoGoogle ? 'Sign Out of Google Account' : 'Sign Into Google Account'}}</button>
+				</div>
+
+				<div>
+					<button class="btn green large" id="google-auth post-to-drive">Post to Google</button>
+				</div>
+
+				<div>
+					<button id="change-folder" class="btn green large" id="google-auth">Change Directory</button>
+				</div>
+
+			</br>
+			</br>
+
+
+            <h2>Download to Computer</h2>
+				<label><input type="checkbox" ng-model="downloadOption" ng-click="toggleDownloadOption()" /> Download to downloads folder on computer</label>
+
+
+			</div>
+
+
+
+			<footer>
+                <small>NetJournal is a fork of <a target="_blank" href="http://einaregilsson.com">Einar Egilsson's</a> <a target="_blank" href="http://github.com/einaregilsson/Redirector">Redirector</a></small>
+			</footer>
+
   <div id="content">
     <div>
       <div class="option-row">
@@ -67,57 +117,9 @@
   </div>
 
   <script src="js/closuresetup.js"></script>
-  <script src="js/options_all.js"></script>	
 
-		<div id="blur-wrapper" ng-class="{blur: showEditForm || showDeleteForm}">
-
-			<h1>Block Journal</h1>
-            <h5>Check in with yourself</h5>
-
-			<div class="menu">
-
-				<a class="btn blue large" href="settings.html">What Sites am I Journaling?</a>
-				<a class="btn blue large" href="storage_settings.html" >Where is my Journal Saved?</a>
-
-			</div>
-
-			<div class="centered-body">
-
-				<label><input type="checkbox" ng-model="googleDocsOption" ng-click="toggleGoogleDocsOption()" />Save to Google Docs</label>
-
-				<div> 
-					<button ng-click="toggleGoogleAuth()" class="btn green large" id="google-auth">{{signedIntoGoogle ? 'Sign Out of Google Account' : 'Sign Into Google Account'}}</button>
-				</div>
-
-				<div> 
-					<button class="btn green large" id="google-auth post-to-drive">Post to Google</button>
-				</div>
-
-				<div> 
-					<button id="change-folder" class="btn green large" id="google-auth">Change Directory</button>
-				</div>
-
-			</br>
-			</br>
-
-
-				<label><input type="checkbox" ng-model="downloadOption" ng-click="toggleDownloadOption()" /> Download to downloads folder on computer</label>
-
-
-			</div>
-
-
-
-			<footer>
-                <small>Block Journal is a fork of <a target="_blank" href="http://einaregilsson.com">Einar Egilsson's</a> <a target="_blank" href="http://github.com/einaregilsson/Redirector">Redirector</a></small>
-			</footer>
 	</body>
 </html>
-
-<!DOCTYPE html>
-
-</html>
-
 
 
 

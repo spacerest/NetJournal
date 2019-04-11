@@ -32,7 +32,7 @@ var navigateHistory = {
 
 }
 
-//variables to check whether a new tab (probably) is opened from a link inside an existing tab 
+//variables to check whether a new tab (probably) is opened from a link inside an existing tab
 var previousTabId = -1;
 var nextTabId = -2;
 
@@ -135,7 +135,7 @@ function checkRedirects(details) {
 		//check if and what rule list index is associated with the current url
 		nextBlockIndex = getRuleIndex(details.type, details.url)
 
-		//if it's the same index, then they're both blocked for the same reason and the user has 
+		//if it's the same index, then they're both blocked for the same reason and the user has
 		//already seen the block screen for this visit
 
 			console.log(previousTabId);
@@ -151,7 +151,7 @@ function checkRedirects(details) {
 			var result = r.getMatch(details.url);
 			if (result.isMatch) {
 				navigateHistory[nextTabId] = {
-	            	"url": details.url, 
+	            	"url": details.url,
 	           		"timeRedirected": new Date().getTime(),
 	           		"blockDescription": result.description,
 	           		"urlPattern": result.includePattern
@@ -172,7 +172,7 @@ function checkRedirects(details) {
 			var result = r.getMatch(details.url);
 			if (result.isMatch) {
 				navigateHistory[nextTabId] = {
-	            	"url": details.url, 
+	            	"url": details.url,
 	           		"timeRedirected": new Date().getTime(),
 	           		"blockDescription": result.description,
 	           		"urlPattern": result.includePattern
@@ -208,9 +208,9 @@ function checkRedirects(details) {
                     //if it matches our current url and it's the same index that ... ?
                     if (result2.isMatch && i == j && !newBlockSameTab) {
                         return {};
-                    } 
+                    }
                 }
-            } 
+            }
 
 			//Check if we're stuck in a loop where we keep redirecting this, in that
 			//case ignore!
@@ -234,16 +234,16 @@ function checkRedirects(details) {
 			}
 			ignoreNextRequest[result.redirectTo] = new Date().getTime();
 
-            navigateHistory[details.tabId] = { 
-            	"url": details.url, 
+            navigateHistory[details.tabId] = {
+            	"url": details.url,
            		"timeRedirected": new Date().getTime(),
            		"blockDescription": result.description,
            		"urlPattern": result.includePattern
            	};
 
 
-			return { redirectUrl: chrome.extension.getURL('block-journal.html') + '?url=' + encodeURIComponent(details.url) };
-		} 
+			return { redirectUrl: chrome.extension.getURL('net-journal.html') + '?url=' + encodeURIComponent(details.url) };
+		}
 	}
 
 
@@ -403,7 +403,7 @@ chrome.runtime.onMessage.addListener(
 			var blockedSitePattern = navigateHistory[sender.tab.id]["urlPattern"];
 			sendResponse(
 				{
-					blockedSite: blockedSite,	
+					blockedSite: blockedSite,
 					blockedSiteDescription: blockedSiteDescription,
 					blockedSitePattern: blockedSitePattern
 

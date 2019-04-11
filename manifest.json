@@ -26,7 +26,7 @@
     "persistent": true
   },
 
-  
+
   "options_page": "storage_settings.html",
 
 
@@ -35,7 +35,7 @@
       "19": "images/icon-active-19.png",
       "38": "images/icon-active-38.png"
     },
-    "default_title": "Block Journal",
+    "default_title": "NetJournal",
     "default_popup": "popup.html"
   },
    "content_security_policy": "script-src 'self' https://www-onepick-opensocial.googleusercontent.com; object-src 'self'"

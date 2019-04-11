@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Block Journal</title>
+		<title>NetJournal</title>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="css/redirector.css" />
 		<link rel="stylesheet" href="css/optionsstyle.css">
@@ -20,6 +20,55 @@
 		<script src="js/controllers/blockJournalInfo.js"></script>
 	</head>
 	<body ng-app="redirectorApp" ng-controller="RedirectorPageCtrl" class="private">
+
+		<div id="blur-wrapper" ng-class="{blur: showEditForm || showDeleteForm}">
+
+			<h1>NetJournal</h1>
+            <h5>Check in with yourself</h5>
+
+			<div class="menu">
+				<a class="float-left btn blue large" href="about.html" target="_blank">About</a>
+				<a class="float-left btn blue large" href="help.html" target="_blank">Help</a>
+				<a class="float-left btn blue large" href="settings.html">Settings</a>
+			</div>
+
+			<div id="message-box" ng-show="true" ng-class="{visible : message, error : messageType == 'error', success : messageType == 'success'}">
+				{{message}}
+				<a ng-click="message=null">&#x2716;</a>
+			</div>
+
+        <!-- Journal Space -->
+        <div id="journal-form">
+            <div class="menu">
+                <a class="btn orange large float-right" href="writing_prompts.html">Need a Writing Prompt?</a>
+			</div>
+
+
+            <div>
+                <textarea id="journal-textarea" placeholder="What are you thinking about?"></textarea>
+			<div class="menu">
+                <p class="btn grey large float-right" id="skipBtn" href"cancel.html">Skip</p>
+				<p class="btn green large float-right" id="post-to-drive">Submit</a>
+			</div>
+
+
+            <div class="block-info" ng-controller="BlockJournalInfo">
+                <p>url: {{ blockedSite }}</p>
+                <p>description: <span id="block-description">{{ blockedSiteDescription }}</span></p>
+                <p>url pattern: <span id="block-url">{{ blockedSitePattern }}</span></p>
+
+
+            </div>
+        </div>
+
+
+
+        <script src="js/block-journal.js"></script>
+
+			<footer>
+                <small>NetJournal is built on a a fork of <a target="_blank" href="http://einaregilsson.com">Einar Egilsson's</a> <a target="_blank" href="http://github.com/einaregilsson/Redirector">Redirector</a></small>
+			</footer>
+
 
   <div id="content">
     <div>
@@ -65,13 +114,13 @@
     </div>
   </div>
 
-  <script src="js/options_all.js"></script>	
+  <script src="js/options_all.js"></script>
 
 
 
 		<div id="cover" ng-show="showEditForm || showDeleteForm">
 			<div id="private-mode-message" ng-show="false">
-				Block Journal does not work in Private Mode
+				NetJournal does not work in Private Mode
 			</div>
 		</div>
 
@@ -185,51 +234,4 @@
 			</div>
 		</div>
 
-
-		<div id="blur-wrapper" ng-class="{blur: showEditForm || showDeleteForm}">
-
-			<h1>Block Journal</h1>
-            <h5>Check in with yourself</h5>
-
-			<div class="menu">
-				<a class="float-left btn blue large" href="help.html" target="_blank">Help</a>
-				<a class="float-left btn blue large" href="settings.html">Settings</a>
-			</div>
-
-			<div id="message-box" ng-show="true" ng-class="{visible : message, error : messageType == 'error', success : messageType == 'success'}">
-				{{message}}
-				<a ng-click="message=null">&#x2716;</a>
-			</div>
-
-        <!-- Journal Space -->
-        <div id="journal-form">
-            <div class="menu">
-                <a class="btn orange large float-right" href="help.html">Need a Writing Prompt?</a>
-			</div>
-
-
-            <div>
-                <textarea id="journal-textarea" placeholder="What are you thinking about?"></textarea>
-			<div class="menu">
-                <p class="btn grey large float-right" id="skipBtn" href"cancel.html">Skip</p>
-				<p class="btn green large float-right" id="post-to-drive">Submit</a>
-			</div>
-
-
-            <div class="block-info" ng-controller="BlockJournalInfo">
-                <p>url: {{ blockedSite }}</p>
-                <p>description: <span id="block-description">{{ blockedSiteDescription }}</span></p>
-                <p>url pattern: <span id="block-url">{{ blockedSitePattern }}</span></p>
-
-
-            </div>
-        </div>
-
-
-
-        <script src="js/block-journal.js"></script>
-
-			<footer>
-                <small>Block Journal is a fork of <a target="_blank" href="http://einaregilsson.com">Einar Egilsson's</a> <a target="_blank" href="http://github.com/einaregilsson/Redirector">Redirector</a></small>
-			</footer>
 
