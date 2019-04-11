@@ -1,4 +1,4 @@
-#About NetJournal
+### About NetJournal
 
 Thanks for trying out NetJournal.
 
